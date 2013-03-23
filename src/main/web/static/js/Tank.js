@@ -6,29 +6,53 @@ var Tank = (function() {
         this._image = new createjs.BitmapAnimation(new createjs.SpriteSheet({
             images: [main._spritesheet],
             frames: [
-                [0, 160, 32, 32, 0, 16, 16],
-                [32, 160, 32, 32, 0, 16, 16]
+                [0, 224, 32, 32, 0, 16, 16],
+                [32, 224, 32, 32, 0, 16, 16],
+                [64, 224, 32, 32, 0, 16, 16],
+                [96, 224, 32, 32, 0, 16, 16],
+                [128, 224, 32, 32, 0, 16, 16],
+                [160, 224, 32, 32, 0, 16, 16],
+                [192, 224, 32, 32, 0, 16, 16],
+                [224, 224, 32, 32, 0, 16, 16]
             ],
             animations: {
-                first: {
+                up: {
                     frames: [0, 1],
+                    frequency: 4
+                },
+                right: {
+                    frames: [2, 3],
+                    frequency: 4
+                },
+                down: {
+                    frames: [4, 5],
+                    frequency: 4
+                },
+                left: {
+                    frames: [6, 7],
                     frequency: 4
                 }
             }
         }));
         this._image.x = 16;
         this._image.y = 16;
-        this._image.gotoAndStop('first');
+        this._image.gotoAndStop('right');
+        this._image.filters = [
+            new createjs.ColorFilter(.9, .9, 0, 1, 0, 0, 0)
+        ];
+        this._image.cache(-16, -16, 32, 32);
+        this._image.updateCache();
         
         this._stage.addChild(this._image);
-        
+
         this._moving = false;
+        this._direction = undefined;
     };
     
     Tank.prototype.tick = function(event) {
         if(this._moving) {
             var diff = event.delta / 1000 * 100;
-            switch(this._image.rotation) {
+            switch(this._direction  ) {
                 case Direction.down:
                     this._image.y += diff;
                     break;
@@ -42,21 +66,25 @@ var Tank = (function() {
                     this._image.x -= diff;
                     break;
             }
+
+            this._image.updateCache();
         }
     };
 
     Tank.prototype.stopMoving = function(event) {
         this._moving = false;
+        this._direction = undefined;
         this._image.stop();
     };
     
     Tank.prototype.rotate = function(direction) {
-        if(this._image.rotation != direction) {
+        if(this._direction != direction) {
             console.log('rotated to ' + direction);
-            this._image.rotation = direction;
+            this._direction = direction;
+            
+            this._image.gotoAndPlay(Direction.toString(direction));
         }
         this._moving = true;
-        this._image.gotoAndPlay('first');
     };
     
     Tank.prototype.shoot = function() {
@@ -64,7 +92,7 @@ var Tank = (function() {
     };
     
     Tank.prototype.getDirection = function() {
-        return this._image.rotation;
+        return this._direction;
     };
     
     return Tank;

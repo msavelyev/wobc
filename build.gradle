@@ -1,0 +1,68 @@
+apply plugin: 'maven'
+
+defaultTasks 'clean', 'upload'
+
+project.ext.shortName = 'wobc-client'
+project.ext.packageDir = 'build/package'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    sshAntTask
+}
+
+dependencies {
+    sshAntTask 'com.jcraft:jsch:0.1.49'
+    sshAntTask 'org.apache.ant:ant-jsch:1.8.4'
+}
+
+ant.taskdef(
+    name: 'scp',
+    classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp',
+    classpath: configurations.sshAntTask.asPath
+)
+ant.taskdef(
+    name: 'sshexec',
+    classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
+    classpath: configurations.sshAntTask.asPath
+)
+
+task copy(type: Copy) {
+    from 'src/main/web'
+    into packageDir
+}
+
+task zip(type: Zip, dependsOn: copy) {
+    from packageDir
+}
+
+def sshExec(cmd) {
+    ant.sshexec(
+        username: remoteUsername,
+        host: remoteHost,
+        trust: true,
+        keyfile: remoteKeyfile,
+        command: cmd
+    )
+}
+
+task upload(dependsOn: zip) {
+    
+    doLast  {
+        ant.scp(
+            file: zip.archivePath,
+            todir: "${remoteUsername}@${remoteHost}:${shortName}",
+            keyfile: remoteKeyfile,
+            trust: true
+        )
+        
+        def archive = zip.archiveName
+        sshExec("cd ${shortName}; unzip $archive; rm $archive")
+    }
+}
+
+task uploadS3(type: Exec) {
+    commandLine 'python', 'upload.py'
+}

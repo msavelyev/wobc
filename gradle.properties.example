@@ -1,0 +1,3 @@
+remoteHost = 192.168.0.1
+remoteUsername = ubuntu
+remoteKeyfile = /Users/petr/.ssh/id_rsa

@@ -1,9 +1,6 @@
 var Main = new ((function() {
     Main.prototype._tick = function(event) {
-//        this._circle.x += event.delta / 1000 * 100;
         this._fps.text = '' + (Math.round(createjs.Ticker.getMeasuredFPS() * 100) / 100) + ' FPS';
-
-//        console.log("total time: "+createjs.Ticker.getTime());
 
         this._stage.update();
     };
@@ -29,7 +26,6 @@ var Main = new ((function() {
         var that = this;
         createjs.Ticker.addEventListener(
             'tick',
-//            this._tick
             function (event) {
                 that._tick(event);
                 that._tank.tick(event);

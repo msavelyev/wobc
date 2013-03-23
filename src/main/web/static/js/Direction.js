@@ -25,5 +25,18 @@ var Direction = new((function() {
         }
     };
     
+    Direction.prototype.toString = function (direction) {
+        switch(direction) {
+            case this.up:
+                return 'up';
+            case this.down:
+                return 'down';
+            case this.left:
+                return 'left';
+            case this.right:
+                return 'right';
+        }
+    };
+    
     return Direction;
 })());
