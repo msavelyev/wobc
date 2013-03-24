@@ -60,7 +60,7 @@ var Bullet = (function () {
         this._main.addChild(this._image);
         this._main.registerTick(this);
         this._main.addBullet(this, tank.getPlayerId());
-        console.log('created bullet');
+//        console.log('created bullet');
         
     };
     
@@ -91,7 +91,7 @@ var Bullet = (function () {
     };
 
     Bullet.prototype.setPos = function(pos) {
-        console.log('newPos ' + pos.x + ';' + pos.y);
+//        console.log('newPos ' + pos.x + ';' + pos.y);
         this.setX(pos.x);
         this.setY(pos.y);
     };
@@ -126,7 +126,7 @@ var Bullet = (function () {
             || newY > this._main.getHeight()
             || this._main.collidesWith(this)
         ) {
-            console.log('removing bullet');
+//            console.log('removing bullet');
             
             this._main.removeChild(this._image);
             this._main.unregisterTick(this);
@@ -136,6 +136,10 @@ var Bullet = (function () {
         } else {
             this.setPos(new createjs.Point(newX, newY));
         }
+    };
+    
+    Bullet.prototype.getDirection = function() {
+        return this._direction;
     };
     
     return Bullet;

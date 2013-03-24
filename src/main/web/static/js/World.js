@@ -27,13 +27,13 @@ var World = (function () {
                 var lX = Math.floor(x / 2);
                 var lY = Math.floor(y / 2);
                 if(lX < level.length && lY < level[lX].length && level[lY][lX]) {
-                    this._level[lX][lY] = Block.ofType(
+                    this._level[x][y] = Block.ofType(
                         main,
                         new createjs.Point(x * World.HALF_BLOCK_SIZE, y * World.HALF_BLOCK_SIZE),
                         level[lY][lX]
                     );
                 } else {
-                    this._level[lX][lY] = {
+                    this._level[x][y] = {
                         collidesWith: function() {
                             return false;
                         }
@@ -46,8 +46,8 @@ var World = (function () {
     World.prototype.collidesWith = function(entity) {
         var pointToBlockPos = function(point) {
             return {
-                x: Math.floor(point.x / World.BLOCK_SIZE),
-                y: Math.floor(point.y / World.BLOCK_SIZE)
+                x: Math.floor(point.x / World.HALF_BLOCK_SIZE),
+                y: Math.floor(point.y / World.HALF_BLOCK_SIZE)
             };
         };
         
@@ -59,15 +59,22 @@ var World = (function () {
         var bottomLeft = new createjs.Point(p.x - w / 2, p.y + h / 2);
         var bottomRight = new createjs.Point(p.x + w / 2, p.y + h / 2);
         
+        var corners = [topLeft, topRight, bottomLeft, bottomRight];
+//        console.log('corners', corners);
+        
         var tl = pointToBlockPos(topLeft);
         var tr = pointToBlockPos(topRight);
         var bl = pointToBlockPos(bottomLeft);
         var br = pointToBlockPos(bottomRight);
         
-        return this._level[tl.x][tl.y].collidesWith(entity)
-            || this._level[tr.x][tr.y].collidesWith(entity)
-            || this._level[bl.x][bl.y].collidesWith(entity)
-            || this._level[br.x][br.y].collidesWith(entity);
+        var crnrs = [tl, tr, bl, br];
+//        console.log('crnrs', crnrs);
+//        console.log('colliding ', entity);
+        
+        return this._level[tl.x][tl.y].collidesWith(entity, corners)
+             | this._level[tr.x][tr.y].collidesWith(entity, corners)
+             | this._level[bl.x][bl.y].collidesWith(entity, corners)
+             | this._level[br.x][br.y].collidesWith(entity, corners);
     };
     
     return World;

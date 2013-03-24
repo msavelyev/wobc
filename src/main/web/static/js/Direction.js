@@ -23,6 +23,10 @@ var Direction = (function() {
         return this._type;
     };
     
+    Direction.prototype.letter = function() {
+        return this._str[0];
+    };
+    
     return Direction;
 })();
 

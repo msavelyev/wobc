@@ -124,7 +124,7 @@ var Tank = (function() {
     };
     
     Tank.prototype.setPos = function(pos) {
-        console.log('new tank pos ' + pos.x + ';' + pos.y);
+//        console.log('new tank pos ' + pos.x + ';' + pos.y);
         this.setX(pos.x);
         this.setY(pos.y);
     };
@@ -157,7 +157,7 @@ var Tank = (function() {
     
     Tank.prototype.rotate = function(direction) {
         if(this._direction != direction || !this._moving) {
-            console.log('rotate to ' + direction.toString());
+//            console.log('rotate to ' + direction.toString());
             this._direction = direction;
             
             switch(this._direction.getType()) {
