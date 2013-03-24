@@ -16,7 +16,7 @@ var Block = (function () {
         this._image.y = point.y;
         this._image.gotoAndPlay('first');
         
-        this._main._stage.addChild(this._image);
+        this._main.addChild(this._image);
     };
     
     return Block;
@@ -28,6 +28,8 @@ Block.ofType = function(main, point, type) {
             return Block.BRICK(main, point);
         case BlockType.STONE:
             return Block.STONE(main, point);
+        case BlockType.WATER:
+            return Block.WATER(main, point);
         default:
             return null;
     }
@@ -57,6 +59,24 @@ Block.STONE = function(main, point) {
         ],
         {
             first: 0
+        }
+    );
+};
+
+Block.WATER = function(main, point) {
+    return new Block(
+        main,
+        BlockType.WATER,
+        point,
+        [
+            [0, 208, 16, 16, 0, 0, 0],
+            [16, 208, 16, 16, 0, 0, 0]
+        ],
+        {
+            first: {
+                frames: [0, 1],
+                frequency: 32
+            }
         }
     );
 };

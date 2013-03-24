@@ -7,25 +7,16 @@ var Main = new ((function() {
     
     Main.prototype.init = function() {
         this._stage = new createjs.Stage('canvas');
+        
+        this._ticks = [];
+        this._bullets = [];
 
         this._border = new createjs.Shape();
         this._border.graphics.beginStroke('white');
         this._border.graphics.drawRect(0, 0, 800, 576);
         this._stage.addChild(this._border);
 
-        this._grid = new createjs.Shape();
-        var graph = this._grid.graphics;
-        graph.beginStroke('rgba(255, 255, 255, 0.3)');
-        for(var x = 0; x < this._stage.canvas.width; x += World.HALF_BLOCK_SIZE) {
-            graph.moveTo(x, 0);
-            graph.lineTo(x, this._stage.canvas.height);
-        }
-        for(var y = 0; y < this._stage.canvas.height; y += World.HALF_BLOCK_SIZE) {
-            graph.moveTo(0, y);
-            graph.lineTo(this._stage.canvas.width, y);
-        }
-
-        this._stage.addChild(this._grid);
+        this._grid = new DebugGrid(this);
 
         this._fps = this._stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
         this._fps.lineHeight = 15;
@@ -35,8 +26,7 @@ var Main = new ((function() {
         this._spritesheet = new Image();
         this._spritesheet.src = "static/images/true_sprites.png";
         
-        this._tank = new Tank(this, new createjs.Point(0, 0));
-        
+        this._tank = new Tank(this, new createjs.Point(0, 0), 0);
         this._world = new World(this);
         
         var that = this;
@@ -44,7 +34,9 @@ var Main = new ((function() {
             'tick',
             function (event) {
                 that._tick(event);
-                that._tank.tick(event);
+                that._ticks.forEach(function(tick) {
+                    tick.tick(event);
+                });
             }
         );
         createjs.Ticker.setFPS(60);
@@ -56,13 +48,64 @@ var Main = new ((function() {
             that._handleKeyUp();
         };
     };
+    
+    Main.prototype.addBullet = function(bullet, playerId) {
+        this._bullets[playerId] = bullet;
+    };
+    
+    Main.prototype.removeBullet = function(playerId) {
+        delete this._bullets[playerId];
+    };
+    
+    Main.prototype.getSpritesheet = function() {
+        return this._spritesheet;
+    };
+    
+    Main.prototype.getWidth = function() {
+        return this._stage.canvas.width;
+    };
+
+    Main.prototype.getHeight = function() {
+        return this._stage.canvas.height;
+    };
+    
+    Main.prototype.addChild = function(child) {
+        this._stage.addChild(child);
+    };
+    
+    Main.prototype.addChildAt = function(child, index) {
+        this._stage.addChildAt(child, index);
+    };
+    
+    Main.prototype.removeChild = function(child) {
+        this._stage.removeChild(child);
+    };
+
+    Main.prototype.removeChildAt = function(index) {
+        this._stage.removeChildAt(index);
+    };
+    
+    Main.prototype.registerTick = function(tick) {
+        this._ticks.push(tick);
+    };
+    
+    Main.prototype.unregisterTick = function(tick) {
+        var index = this._ticks.indexOf(tick);
+        if(index >= 0) {
+            this._ticks.splice(index, 1);
+        }
+    };
 
     Main.prototype._handleKeyDown = function(e) {
         if(!e){ e = window.event; }
         
         switch(e.keyCode) {
             case Key.KEYCODE_SPACE:
-                this._tank.shoot();
+                var playerId = this._tank.getPlayerId();
+                if(this._bullets.length <= playerId || !this._bullets[playerId]) {
+                    this._tank.shoot();
+                }
+                e.preventDefault();
                 return false;
             case Key.KEYCODE_A:
             case Key.KEYCODE_LEFT:

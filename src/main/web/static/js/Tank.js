@@ -1,12 +1,13 @@
 var Tank = (function() {
     
-    function Tank(main, point) {
-        this._stage = main._stage;
+    function Tank(main, point, playerId) {
+        this._main = main;
+        this._playerId = playerId;
 
         this._point = new createjs.Point();
         
         this._image = new createjs.BitmapAnimation(new createjs.SpriteSheet({
-            images: [main._spritesheet],
+            images: [main.getSpritesheet()],
             frames: [
                 [0, 224, 32, 32, 0, 16, 16],
                 [32, 224, 32, 32, 0, 16, 16],
@@ -49,10 +50,11 @@ var Tank = (function() {
         );
         this._image.updateCache();
         
-        this._stage.addChild(this._image);
+        main.addChild(this._image);
+        main.registerTick(this);
 
         this._moving = false;
-        this._direction = undefined;
+        this._direction = Direction.RIGHT;
     };
     
     Tank.prototype.tick = function(event) {
@@ -81,16 +83,20 @@ var Tank = (function() {
             if(newY < 0) {
                 newY = 0;
             }
-            if(newX > this._stage.canvas.width - World.BLOCK_SIZE) {
-                newX = this._stage.canvas.width - World.BLOCK_SIZE;
+            if(newX > this._main.getWidth() - World.BLOCK_SIZE) {
+                newX = this._main.getWidth() - World.BLOCK_SIZE;
             }
-            if(newY > this._stage.canvas.height - World.BLOCK_SIZE) {
-                newY = this._stage.canvas.height - World.BLOCK_SIZE;
+            if(newY > this._main.getHeight() - World.BLOCK_SIZE) {
+                newY = this._main.getHeight() - World.BLOCK_SIZE;
             }
             
             this.setPos(new createjs.Point(newX, newY));
             this._image.updateCache();
         }
+    };
+    
+    Tank.prototype.getPlayerId = function() {
+        return this._playerId;
     };
     
     Tank.prototype.setX = function(x) {
@@ -130,12 +136,12 @@ var Tank = (function() {
 
     Tank.prototype.stopMoving = function() {
         this._moving = false;
-        this._direction = undefined;
+//        this._direction = undefined;
         this._image.stop();
     };
     
     Tank.prototype.rotate = function(direction) {
-        if(this._direction != direction) {
+        if(this._direction != direction || !this._moving) {
             console.log('rotate to ' + direction.toString());
             this._direction = direction;
             
@@ -154,7 +160,7 @@ var Tank = (function() {
     };
     
     Tank.prototype.shoot = function() {
-        
+        new Bullet(this._main, this);
     };
     
     Tank.prototype.getDirection = function() {
