@@ -34,13 +34,18 @@ var Tank = (function() {
                 }
             }
         }));
-        this._image.x = 16;
-        this._image.y = 16;
+        this._image.x = World.HALF_BLOCK_SIZE;
+        this._image.y = World.HALF_BLOCK_SIZE;
         this._image.gotoAndStop('right');
         this._image.filters = [
             new createjs.ColorFilter(.9, .9, 0, 1, 0, 0, 0)
         ];
-        this._image.cache(-16, -16, 32, 32);
+        this._image.cache(
+            -World.HALF_BLOCK_SIZE,
+            -World.HALF_BLOCK_SIZE,
+            World.BLOCK_SIZE,
+            World.BLOCK_SIZE
+        );
         this._image.updateCache();
         
         this._stage.addChild(this._image);
@@ -52,26 +57,46 @@ var Tank = (function() {
     Tank.prototype.tick = function(event) {
         if(this._moving) {
             var diff = event.delta / 1000 * 100;
-            switch(this._direction  ) {
-                case Direction.down:
+            switch(this._direction) {
+                case Direction.DOWN:
                     this._image.y += diff;
                     break;
-                case Direction.up:
+                case Direction.UP:
                     this._image.y -= diff;
                     break;
-                case Direction.right:
+                case Direction.RIGHT:
                     this._image.x += diff;
                     break;
-                case Direction.left:
+                case Direction.LEFT:
                     this._image.x -= diff;
                     break;
             }
 
             this._image.updateCache();
+            if(this._image.x < World.HALF_BLOCK_SIZE) {
+                this._image.x = World.HALF_BLOCK_SIZE;
+            }
+            if(this._image.y < World.HALF_BLOCK_SIZE) {
+                this._image.y = World.HALF_BLOCK_SIZE;
+            }
+            if(this._image.x > this._stage.canvas.width - World.HALF_BLOCK_SIZE) {
+                this._image.x = this._stage.canvas.width - World.HALF_BLOCK_SIZE;
+            }
+            if(this._image.y > this._stage.canvas.height - World.HALF_BLOCK_SIZE) {
+                this._image.y = this._stage.canvas.height - World.HALF_BLOCK_SIZE;
+            }
         }
     };
+    
+    Tank.prototype._fixHorizontally = function() {
+        this._image.x = World.HALF_BLOCK_SIZE * Math.round(this._image.x / World.HALF_BLOCK_SIZE);
+    };
 
-    Tank.prototype.stopMoving = function(event) {
+    Tank.prototype._fixVertically = function() {
+        this._image.y = World.HALF_BLOCK_SIZE * Math.round(this._image.y / World.HALF_BLOCK_SIZE);
+    };
+
+    Tank.prototype.stopMoving = function() {
         this._moving = false;
         this._direction = undefined;
         this._image.stop();
@@ -79,10 +104,19 @@ var Tank = (function() {
     
     Tank.prototype.rotate = function(direction) {
         if(this._direction != direction) {
-            console.log('rotated to ' + direction);
+            console.log('rotate to ' + direction.toString());
             this._direction = direction;
             
-            this._image.gotoAndPlay(Direction.toString(direction));
+            switch(this._direction.getType()) {
+                case Direction.VERT:
+                    this._fixHorizontally();
+                    break;
+                case Direction.HORI:
+                    this._fixVertically();
+                    break;
+            }
+            
+            this._image.gotoAndPlay(direction.toString());
         }
         this._moving = true;
     };

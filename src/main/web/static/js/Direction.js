@@ -1,42 +1,42 @@
-var Direction = new((function() {
-    function Direction() {
-        this.up = 270;
-        this.down = 90;
-        this.left = 180;
-        this.right = 0;
+var Direction = (function() {
+    function Direction(degree, keys, str, type) {
+        this._degree = degree;
+        this._keys = keys;
+        this._str = str;
+        this._type = type;
+        
+        var that = this;
+        this._keys.forEach(function(key) {
+            Direction._keys[key] = that;
+        });
     };
     
-    Direction.prototype.fromKey = function (keycode) {
-        switch(keycode) {
-            case Key.KEYCODE_A:
-            case Key.KEYCODE_LEFT:
-                return this.left;
-            case Key.KEYCODE_D:
-            case Key.KEYCODE_RIGHT:
-                return this.right;
-            case Key.KEYCODE_W:
-            case Key.KEYCODE_UP:
-                return this.up;
-            case Key.KEYCODE_S:
-            case Key.KEYCODE_DOWN:
-                return this.down;
-            default:
-                return undefined;
-        }
+    Direction.prototype.getDegree = function() {
+        return this._degree;
     };
     
-    Direction.prototype.toString = function (direction) {
-        switch(direction) {
-            case this.up:
-                return 'up';
-            case this.down:
-                return 'down';
-            case this.left:
-                return 'left';
-            case this.right:
-                return 'right';
-        }
+    Direction.prototype.toString = function () {
+        return this._str;
+    };
+    
+    Direction.prototype.getType = function() {
+        return this._type;
     };
     
     return Direction;
-})());
+})();
+
+Direction._keys = {};
+Direction.fromKey = function(keycode) {
+    if(Direction._keys[keycode]) {
+        return Direction._keys[keycode];
+    }
+};
+
+Direction.VERT = 'vert';
+Direction.HORI = 'hori';
+
+Direction.UP = new Direction(270, [Key.KEYCODE_W, Key.KEYCODE_UP], 'up', Direction.VERT);
+Direction.DOWN = new Direction(90, [Key.KEYCODE_S, Key.KEYCODE_DOWN], 'down', Direction.VERT);
+Direction.LEFT = new Direction(180, [Key.KEYCODE_A, Key.KEYCODE_LEFT], 'left', Direction.HORI);
+Direction.RIGHT = new Direction(0, [Key.KEYCODE_D, Key.KEYCODE_RIGHT], 'right', Direction.HORI);

@@ -10,8 +10,22 @@ var Main = new ((function() {
 
         this._border = new createjs.Shape();
         this._border.graphics.beginStroke('white');
-        this._border.graphics.drawRect(0, 0, 800, 600);
+        this._border.graphics.drawRect(0, 0, 800, 576);
         this._stage.addChild(this._border);
+
+        this._grid = new createjs.Shape();
+        var graph = this._grid.graphics;
+        graph.beginStroke('rgba(255, 255, 255, 0.3)');
+        for(var x = 0; x < this._stage.canvas.width; x += World.HALF_BLOCK_SIZE) {
+            graph.moveTo(x, 0);
+            graph.lineTo(x, this._stage.canvas.height);
+        }
+        for(var y = 0; y < this._stage.canvas.height; y += World.HALF_BLOCK_SIZE) {
+            graph.moveTo(0, y);
+            graph.lineTo(this._stage.canvas.width, y);
+        }
+
+        this._stage.addChild(this._grid);
 
         this._fps = this._stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
         this._fps.lineHeight = 15;
@@ -22,7 +36,7 @@ var Main = new ((function() {
         this._spritesheet.src = "static/images/true_sprites.png";
         
         this._tank = new Tank(this);
-
+        
         var that = this;
         createjs.Ticker.addEventListener(
             'tick',
@@ -56,7 +70,9 @@ var Main = new ((function() {
             case Key.KEYCODE_UP:
             case Key.KEYCODE_S:
             case Key.KEYCODE_DOWN:
-                this._tank.rotate(Direction.fromKey(e.keyCode));
+                var direction = Direction.fromKey(e.keyCode);
+                this._tank.rotate(direction);
+                e.preventDefault();
                 return false;
         }
     }
@@ -76,7 +92,8 @@ var Main = new ((function() {
                 if(this._tank.getDirection() == Direction.fromKey(e.keyCode)) {
                     this._tank.stopMoving();
                 }
-                break;
+                e.preventDefault();
+                return false;
         }
     }
     

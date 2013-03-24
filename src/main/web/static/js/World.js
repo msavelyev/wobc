@@ -1,10 +1,27 @@
-var World = new ((function () {
+var World = (function () {
     
-    
-    
-    function World() {
+    function World(main) {
+        var level = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+            [0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+            [0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+            [0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1],
+            [0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+            [0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
+            [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1]
+        ];
         
+        this._stage = main._stage;
     };
     
     return World;
-})());
+})();
+
+World.BLOCK_SIZE = 32;
+World.HALF_BLOCK_SIZE = World.BLOCK_SIZE / 2;
+World.Q_BLOCK_SIZE = World.HALF_BLOCK_SIZE / 2;
