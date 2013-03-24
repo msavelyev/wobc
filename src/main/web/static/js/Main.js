@@ -35,7 +35,9 @@ var Main = new ((function() {
         this._spritesheet = new Image();
         this._spritesheet.src = "static/images/true_sprites.png";
         
-        this._tank = new Tank(this);
+        this._tank = new Tank(this, new createjs.Point(0, 0));
+        
+        this._world = new World(this);
         
         var that = this;
         createjs.Ticker.addEventListener(

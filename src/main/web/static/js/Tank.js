@@ -1,7 +1,9 @@
 var Tank = (function() {
     
-    function Tank(main) {
+    function Tank(main, point) {
         this._stage = main._stage;
+
+        this._point = new createjs.Point();
         
         this._image = new createjs.BitmapAnimation(new createjs.SpriteSheet({
             images: [main._spritesheet],
@@ -34,8 +36,7 @@ var Tank = (function() {
                 }
             }
         }));
-        this._image.x = World.HALF_BLOCK_SIZE;
-        this._image.y = World.HALF_BLOCK_SIZE;
+        this.setPos(point);
         this._image.gotoAndStop('right');
         this._image.filters = [
             new createjs.ColorFilter(.9, .9, 0, 1, 0, 0, 0)
@@ -57,43 +58,74 @@ var Tank = (function() {
     Tank.prototype.tick = function(event) {
         if(this._moving) {
             var diff = event.delta / 1000 * 100;
+            var newY = this.getY();
+            var newX = this.getX();
             switch(this._direction) {
                 case Direction.DOWN:
-                    this._image.y += diff;
+                    newY += diff;
                     break;
                 case Direction.UP:
-                    this._image.y -= diff;
+                    newY -= diff;
                     break;
                 case Direction.RIGHT:
-                    this._image.x += diff;
+                    newX += diff;
                     break;
                 case Direction.LEFT:
-                    this._image.x -= diff;
+                    newX -= diff;
                     break;
             }
 
+            if(newX < 0) {
+                newX = 0;
+            }
+            if(newY < 0) {
+                newY = 0;
+            }
+            if(newX > this._stage.canvas.width - World.BLOCK_SIZE) {
+                newX = this._stage.canvas.width - World.BLOCK_SIZE;
+            }
+            if(newY > this._stage.canvas.height - World.BLOCK_SIZE) {
+                newY = this._stage.canvas.height - World.BLOCK_SIZE;
+            }
+            
+            this.setPos(new createjs.Point(newX, newY));
             this._image.updateCache();
-            if(this._image.x < World.HALF_BLOCK_SIZE) {
-                this._image.x = World.HALF_BLOCK_SIZE;
-            }
-            if(this._image.y < World.HALF_BLOCK_SIZE) {
-                this._image.y = World.HALF_BLOCK_SIZE;
-            }
-            if(this._image.x > this._stage.canvas.width - World.HALF_BLOCK_SIZE) {
-                this._image.x = this._stage.canvas.width - World.HALF_BLOCK_SIZE;
-            }
-            if(this._image.y > this._stage.canvas.height - World.HALF_BLOCK_SIZE) {
-                this._image.y = this._stage.canvas.height - World.HALF_BLOCK_SIZE;
-            }
         }
     };
     
+    Tank.prototype.setX = function(x) {
+        this._point.x = x;
+        this._image.x = this._point.x + World.HALF_BLOCK_SIZE;
+    };
+    
+    Tank.prototype.setY = function(y) {
+        this._point.y = y;
+        this._image.y = this._point.y + World.HALF_BLOCK_SIZE;
+    };
+    
+    Tank.prototype.getX = function() {
+        return this._point.x;
+    };
+
+    Tank.prototype.getY = function() {
+        return this._point.y;
+    };
+    
+    Tank.prototype.setPos = function(pos) {
+        this.setX(pos.x);
+        this.setY(pos.y);
+    };
+    
+    Tank.prototype.getPos = function() {
+        return new createjs.Point(this.getX(), this.getY());
+    };
+    
     Tank.prototype._fixHorizontally = function() {
-        this._image.x = World.HALF_BLOCK_SIZE * Math.round(this._image.x / World.HALF_BLOCK_SIZE);
+        this.setX(World.HALF_BLOCK_SIZE * Math.round(this.getX() / World.HALF_BLOCK_SIZE));
     };
 
     Tank.prototype._fixVertically = function() {
-        this._image.y = World.HALF_BLOCK_SIZE * Math.round(this._image.y / World.HALF_BLOCK_SIZE);
+        this.setY(World.HALF_BLOCK_SIZE * Math.round(this.getY() / World.HALF_BLOCK_SIZE));
     };
 
     Tank.prototype.stopMoving = function() {
