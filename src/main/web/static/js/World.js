@@ -38,10 +38,6 @@ var World = (function () {
                             return false;
                         }
                     };
-//                    this._level[lX][lY] = Block.EMPTY(
-//                        main,
-//                        new createjs.Point(x * World.HALF_BLOCK_SIZE, y * World.HALF_BLOCK_SIZE)
-//                    );
                 }
             }
         }

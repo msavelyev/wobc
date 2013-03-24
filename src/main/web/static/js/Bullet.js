@@ -131,6 +131,8 @@ var Bullet = (function () {
             this._main.removeChild(this._image);
             this._main.unregisterTick(this);
             this._main.removeBullet(this._tank.getPlayerId());
+            
+            new Explode(this._main, this.getPos());
         } else {
             this.setPos(new createjs.Point(newX, newY));
         }

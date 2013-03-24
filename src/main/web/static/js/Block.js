@@ -8,7 +8,7 @@ var Block = (function () {
         this._collideFunc = collideFunc;
         
         this._image = new createjs.BitmapAnimation(new createjs.SpriteSheet({
-            images: [main._spritesheet],
+            images: [main.getSpritesheet()],
             frames: frames,
             animations: animations
         }));
@@ -62,7 +62,7 @@ Block.BRICK = function(main, point) {
         point,
         [[16, 192, 16, 16, 0, 0, 0]],
         {first: 0},
-        function() {
+        function(entity) {
             return true;
         }
     );
