@@ -1,6 +1,6 @@
 apply plugin: 'maven'
 
-defaultTasks 'clean', 'upload'
+defaultTasks 'uploadS3'
 
 project.ext.shortName = 'wobc-client'
 project.ext.packageDir = 'build/package'
