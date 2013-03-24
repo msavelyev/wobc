@@ -32,13 +32,46 @@ var World = (function () {
                         new createjs.Point(x * World.HALF_BLOCK_SIZE, y * World.HALF_BLOCK_SIZE),
                         level[lY][lX]
                     );
+                } else {
+                    this._level[lX][lY] = {
+                        collidesWith: function() {
+                            return false;
+                        }
+                    };
+//                    this._level[lX][lY] = Block.EMPTY(
+//                        main,
+//                        new createjs.Point(x * World.HALF_BLOCK_SIZE, y * World.HALF_BLOCK_SIZE)
+//                    );
                 }
             }
         }
     };
     
     World.prototype.collidesWith = function(entity) {
+        var pointToBlockPos = function(point) {
+            return {
+                x: Math.floor(point.x / World.BLOCK_SIZE),
+                y: Math.floor(point.y / World.BLOCK_SIZE)
+            };
+        };
         
+        var p = entity.getPos();
+        var w = entity.getWidth() - 1;
+        var h = entity.getHeight() - 1;
+        var topLeft = new createjs.Point(p.x - w / 2, p.y - h / 2);
+        var topRight = new createjs.Point(p.x + w / 2, p.y - h / 2);
+        var bottomLeft = new createjs.Point(p.x - w / 2, p.y + h / 2);
+        var bottomRight = new createjs.Point(p.x + w / 2, p.y + h / 2);
+        
+        var tl = pointToBlockPos(topLeft);
+        var tr = pointToBlockPos(topRight);
+        var bl = pointToBlockPos(bottomLeft);
+        var br = pointToBlockPos(bottomRight);
+        
+        return this._level[tl.x][tl.y].collidesWith(entity)
+            || this._level[tr.x][tr.y].collidesWith(entity)
+            || this._level[bl.x][bl.y].collidesWith(entity)
+            || this._level[br.x][br.y].collidesWith(entity);
     };
     
     return World;

@@ -9,10 +9,10 @@ var Tank = (function() {
         this._image = new createjs.BitmapAnimation(new createjs.SpriteSheet({
             images: [main.getSpritesheet()],
             frames: [
-                [0, 224, 32, 32, 0, 16, 16],
-                [32, 224, 32, 32, 0, 16, 16],
-                [64, 224, 32, 32, 0, 16, 16],
-                [96, 224, 32, 32, 0, 16, 16],
+                [0,   224, 32, 32, 0, 16, 16],
+                [32,  224, 32, 32, 0, 16, 16],
+                [64,  224, 32, 32, 0, 16, 16],
+                [96,  224, 32, 32, 0, 16, 16],
                 [128, 224, 32, 32, 0, 16, 16],
                 [160, 224, 32, 32, 0, 16, 16],
                 [192, 224, 32, 32, 0, 16, 16],
@@ -59,9 +59,12 @@ var Tank = (function() {
     
     Tank.prototype.tick = function(event) {
         if(this._moving) {
+            var oldX = this.getX();
+            var oldY = this.getY();
+            
             var diff = event.delta / 1000 * 100;
-            var newY = this.getY();
-            var newX = this.getX();
+            var newX = oldX;
+            var newY = oldY;
             switch(this._direction) {
                 case Direction.DOWN:
                     newY += diff;
@@ -77,20 +80,23 @@ var Tank = (function() {
                     break;
             }
 
-            if(newX < 0) {
-                newX = 0;
+            if(newX < this.getWidth() / 2) {
+                newX = this.getWidth() / 2;
             }
-            if(newY < 0) {
-                newY = 0;
+            if(newY < this.getHeight() / 2) {
+                newY = this.getHeight() / 2;
             }
-            if(newX > this._main.getWidth() - World.BLOCK_SIZE) {
-                newX = this._main.getWidth() - World.BLOCK_SIZE;
+            if(newX > this._main.getWidth() - World.BLOCK_SIZE / 2) {
+                newX = this._main.getWidth() - World.BLOCK_SIZE / 2;
             }
-            if(newY > this._main.getHeight() - World.BLOCK_SIZE) {
-                newY = this._main.getHeight() - World.BLOCK_SIZE;
+            if(newY > this._main.getHeight() - World.BLOCK_SIZE / 2) {
+                newY = this._main.getHeight() - World.BLOCK_SIZE / 2;
             }
             
             this.setPos(new createjs.Point(newX, newY));
+            if(this._main.collidesWith(this)) {
+                this.setPos(new createjs.Point(oldX, oldY));
+            }
             this._image.updateCache();
         }
     };
@@ -101,12 +107,12 @@ var Tank = (function() {
     
     Tank.prototype.setX = function(x) {
         this._point.x = x;
-        this._image.x = this._point.x + World.HALF_BLOCK_SIZE;
+        this._image.x = this._point.x;
     };
     
     Tank.prototype.setY = function(y) {
         this._point.y = y;
-        this._image.y = this._point.y + World.HALF_BLOCK_SIZE;
+        this._image.y = this._point.y;
     };
     
     Tank.prototype.getX = function() {
@@ -118,8 +124,17 @@ var Tank = (function() {
     };
     
     Tank.prototype.setPos = function(pos) {
+        console.log('new tank pos ' + pos.x + ';' + pos.y);
         this.setX(pos.x);
         this.setY(pos.y);
+    };
+    
+    Tank.prototype.getWidth = function() {
+        return World.BLOCK_SIZE;
+    };
+
+    Tank.prototype.getHeight = function() {
+        return World.BLOCK_SIZE;
     };
     
     Tank.prototype.getPos = function() {

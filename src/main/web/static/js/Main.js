@@ -11,6 +11,11 @@ var Main = new ((function() {
         this._ticks = [];
         this._bullets = [];
 
+        this._spritesheet = new Image();
+        this._spritesheet.src = "static/images/true_sprites.png";
+
+        this._world = new World(this);
+
         this._border = new createjs.Shape();
         this._border.graphics.beginStroke('white');
         this._border.graphics.drawRect(0, 0, 800, 576);
@@ -23,11 +28,7 @@ var Main = new ((function() {
         this._fps.x = this._stage.canvas.width - 80;
         this._fps.y = 10;
         
-        this._spritesheet = new Image();
-        this._spritesheet.src = "static/images/true_sprites.png";
-        
-        this._tank = new Tank(this, new createjs.Point(0, 0), 0);
-        this._world = new World(this);
+        this._tank = new Tank(this, new createjs.Point(32, 32), 0);
         
         var that = this;
         createjs.Ticker.addEventListener(
@@ -47,6 +48,10 @@ var Main = new ((function() {
         document.onkeyup = function() {
             that._handleKeyUp();
         };
+    };
+    
+    Main.prototype.collidesWith = function(entity) {
+        return this._world.collidesWith(entity);
     };
     
     Main.prototype.addBullet = function(bullet, playerId) {

@@ -52,8 +52,8 @@ var Bullet = (function () {
         
         this.setPos(
             new createjs.Point(
-                tank.getPos().x + World.HALF_BLOCK_SIZE,
-                tank.getPos().y + World.HALF_BLOCK_SIZE
+                tank.getPos().x,
+                tank.getPos().y
             )
         );
         
@@ -62,6 +62,14 @@ var Bullet = (function () {
         this._main.addBullet(this, tank.getPlayerId());
         console.log('created bullet');
         
+    };
+    
+    Bullet.prototype.getWidth = function() {
+        return this._width;
+    };
+
+    Bullet.prototype.getHeight = function() {
+        return this._height;
     };
 
     Bullet.prototype.setX = function(x) {
@@ -112,7 +120,12 @@ var Bullet = (function () {
                 break;
         }
         
-        if(newY < 0 || newX < 0 || newX > this._main.getWidth() || newY > this._main.getHeight()) {
+        if(newY < 0
+            || newX < 0
+            || newX > this._main.getWidth()
+            || newY > this._main.getHeight()
+            || this._main.collidesWith(this)
+        ) {
             console.log('removing bullet');
             
             this._main.removeChild(this._image);
