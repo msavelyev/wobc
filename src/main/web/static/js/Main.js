@@ -10,6 +10,7 @@ var Main = new ((function() {
         
         this._ticks = [];
         this._bullets = [];
+        this._tanks = [];
 
         this._spritesheet = new Image();
         this._spritesheet.src = "static/images/true_sprites.png";
@@ -28,7 +29,9 @@ var Main = new ((function() {
         this._fps.x = this._stage.canvas.width - 80;
         this._fps.y = 10;
         
-        this._tank = new Tank(this, new createjs.Point(32, 32), 0);
+        this._comet = new Comet(this);
+        
+//        this._tank = new Tank(this, new createjs.Point(32, 32), 0);
         
         var that = this;
         createjs.Ticker.addEventListener(
@@ -48,6 +51,22 @@ var Main = new ((function() {
         document.onkeyup = function() {
             that._handleKeyUp();
         };
+    };
+    
+    Main.prototype.addTank = function(playerId, x, y) {
+        this._tanks[playerId] = new Tank(this, new createjs.Point(x, y), playerId);
+    };
+    
+    Main.prototype.removeTank = function(playerId) {
+        delete this._tanks[playerId];
+    };
+    
+    Main.prototype.createTank = function(playerId, x, y) {
+        this._tank = new Tank(this, new createjs.Point(x, y), playerId);
+    };
+    
+    Main.prototype.stop = function() {
+        this._comet.disconnect();
     };
     
     Main.prototype.collidesWith = function(entity) {
@@ -109,6 +128,7 @@ var Main = new ((function() {
                 var playerId = this._tank.getPlayerId();
                 if(this._bullets.length <= playerId || !this._bullets[playerId]) {
                     this._tank.shoot();
+                    this._comet.send({playerId: playerId, type: 'shoot'});
                 }
                 e.preventDefault();
                 return false;
@@ -122,6 +142,11 @@ var Main = new ((function() {
             case Key.KEYCODE_DOWN:
                 var direction = Direction.fromKey(e.keyCode);
                 this._tank.rotate(direction);
+                this._comet.send({
+                    playerId: playerId,
+                    type: 'move',
+                    direction: direction.toString()
+                });
                 e.preventDefault();
                 return false;
         }
@@ -141,11 +166,31 @@ var Main = new ((function() {
             case Key.KEYCODE_DOWN:
                 if(this._tank.getDirection() == Direction.fromKey(e.keyCode)) {
                     this._tank.stopMoving();
+                    var playerId = this._tank.getPlayerId();
+                    this._comet.send({playerId: playerId, type: 'stop'});
                 }
                 e.preventDefault();
                 return false;
         }
     }
+    
+    Main.prototype.performAction = function(data) {
+        var playerId = data.playerId;
+        if(this._tank.getPlayerId() != playerId) {
+            var tank = this._tanks[playerId];
+            switch(data.type) {
+                case 'shoot':
+                    tank.shoot();
+                    break;
+                case 'move':
+                    tank.rotate(Direction.fromStr(data.direction));
+                    break;
+                case 'stop':
+                    tank.stopMoving();
+                    break;
+            }
+        }
+    };
     
     function Main() { };
     

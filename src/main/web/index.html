@@ -1,9 +1,24 @@
 <!doctype html>
 <html>
 <head>
-    <script type="text/javascript" src="static/js/easeljs-0.6.0.min.js"></script>
-    <script type="text/javascript" src="static/js/filters/Filter.js"></script>
-    <script type="text/javascript" src="static/js/filters/ColorFilter.js"></script>
+    <script type="text/javascript" src="static/js/easeljs/easeljs-0.6.0.min.js"></script>
+    <script type="text/javascript" src="static/js/easeljs/filters/Filter.js"></script>
+    <script type="text/javascript" src="static/js/easeljs/filters/ColorFilter.js"></script>
+    
+    <script type="text/javascript" src="static/js/cometd/jquery-1.8.3.js"></script>
+    
+    <script type="text/javascript" src="static/js/cometd/cometd-namespace.js"></script>
+    <script type="text/javascript" src="static/js/cometd/cometd-json.js"></script>
+    <script type="text/javascript" src="static/js/cometd/Transport.js"></script>
+    <script type="text/javascript" src="static/js/cometd/TransportRegistry.js"></script>
+    <script type="text/javascript" src="static/js/cometd/WebSocketTransport.js"></script>
+    <script type="text/javascript" src="static/js/cometd/LongPollingTransport.js"></script>
+    <script type="text/javascript" src="static/js/cometd/RequestTransport.js"></script>
+    <script type="text/javascript" src="static/js/cometd/CallbackPollingTransport.js"></script>
+    <script type="text/javascript" src="static/js/cometd/Utils.js"></script>
+    <script type="text/javascript" src="static/js/cometd/Cometd.js"></script>
+    
+    <script type="text/javascript" src="static/js/cometd/jquery.cometd.js"></script>
     
     <script type="text/javascript" src="static/js/Key.js"></script>
     <script type="text/javascript" src="static/js/Direction.js"></script>
@@ -15,10 +30,15 @@
     <script type="text/javascript" src="static/js/Bullet.js"></script>
     <script type="text/javascript" src="static/js/World.js"></script>
     <script type="text/javascript" src="static/js/Tank.js"></script>
+    <script type="text/javascript" src="static/js/Comet.js"></script>
     <script type="text/javascript" src="static/js/Main.js"></script>
+    
+    <!--<script type="text/javascript" src="static/js/comet-app.js"></script>-->
+    
     <link rel="stylesheet" type="text/css" href="static/css/main.css" />
+    
 </head>
-<body onload="Main.init();">
+<body onload="Main.init();" onunload="Main.stop();">
 
 <canvas id="canvas" width="800" height="576">
     

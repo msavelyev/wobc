@@ -44,3 +44,19 @@ Direction.UP = new Direction(270, [Key.KEYCODE_W, Key.KEYCODE_UP], 'up', Directi
 Direction.DOWN = new Direction(90, [Key.KEYCODE_S, Key.KEYCODE_DOWN], 'down', Direction.VERT);
 Direction.LEFT = new Direction(180, [Key.KEYCODE_A, Key.KEYCODE_LEFT], 'left', Direction.HORI);
 Direction.RIGHT = new Direction(0, [Key.KEYCODE_D, Key.KEYCODE_RIGHT], 'right', Direction.HORI);
+
+Direction.fromStr = function(str) {
+    switch(str) {
+        case 'up':
+            return Direction.UP;
+        case 'down':
+            return Direction.DOWN;
+        case 'left':
+            return Direction.LEFT;
+        case 'right':
+            return Direction.RIGHT;
+        default:
+            console.log('wrong direction', str);
+    }
+};
+
