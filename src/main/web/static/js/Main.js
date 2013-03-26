@@ -53,11 +53,17 @@ var Main = new ((function() {
         };
     };
     
+    Main.prototype.getTank = function() {
+        return this._tank;
+    };
+    
     Main.prototype.addTank = function(playerId, x, y) {
         this._tanks[playerId] = new Tank(this, new createjs.Point(x, y), playerId);
     };
     
     Main.prototype.removeTank = function(playerId) {
+        var tank = this._tanks[playerId];
+        tank.remove();
         delete this._tanks[playerId];
     };
     
@@ -66,7 +72,7 @@ var Main = new ((function() {
     };
     
     Main.prototype.stop = function() {
-        this._comet.disconnect();
+        this._comet.disconnect(this._tank.getPlayerId());
     };
     
     Main.prototype.collidesWith = function(entity) {
@@ -123,9 +129,9 @@ var Main = new ((function() {
     Main.prototype._handleKeyDown = function(e) {
         if(!e){ e = window.event; }
         
+        var playerId = this._tank.getPlayerId();
         switch(e.keyCode) {
             case Key.KEYCODE_SPACE:
-                var playerId = this._tank.getPlayerId();
                 if(this._bullets.length <= playerId || !this._bullets[playerId]) {
                     this._tank.shoot();
                     this._comet.send({playerId: playerId, type: 'shoot'});
@@ -141,12 +147,15 @@ var Main = new ((function() {
             case Key.KEYCODE_S:
             case Key.KEYCODE_DOWN:
                 var direction = Direction.fromKey(e.keyCode);
-                this._tank.rotate(direction);
-                this._comet.send({
-                    playerId: playerId,
-                    type: 'move',
-                    direction: direction.toString()
-                });
+                var result = this._tank.rotate(direction);
+                
+                if(result) {
+                    this._comet.send({
+                        playerId: playerId,
+                        type: 'move',
+                        direction: direction.toString()
+                    });
+                }
                 e.preventDefault();
                 return false;
         }

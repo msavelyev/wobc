@@ -33,12 +33,9 @@
     <script type="text/javascript" src="static/js/Comet.js"></script>
     <script type="text/javascript" src="static/js/Main.js"></script>
     
-    <!--<script type="text/javascript" src="static/js/comet-app.js"></script>-->
-    
     <link rel="stylesheet" type="text/css" href="static/css/main.css" />
-    
 </head>
-<body onload="Main.init();" onunload="Main.stop();">
+<body onload="Main.init();" onbeforeunload="Main.stop();">
 
 <canvas id="canvas" width="800" height="576">
     

@@ -21,7 +21,8 @@ var Comet = (function () {
         this._cometd.handshake();
     };
     
-    Comet.prototype.disconnect = function() {
+    Comet.prototype.disconnect = function(playerId) {
+        this._cometd.publish('/service/disconnected', {playerId: playerId});
         this._cometd.disconnect(true);
     };
 
@@ -55,11 +56,14 @@ var Comet = (function () {
     }
     
     Comet.prototype.send = function(data) {
+        console.log('sending data', data);
         this._cometd.publish('/service/action', data);
     };
+    
+    Comet.prototype.debug = function(msg, data) {
+        console.log('recieved ' + msg, data);
+    };
 
-    // Function invoked when first contacting the server and
-    // when the server has lost the state of this client
     Comet.prototype._metaHandshake = function(handshake) {
         if(handshake.successful === true) {
             console.log('publishing');
@@ -67,16 +71,25 @@ var Comet = (function () {
             this._cometd.batch(function() {
                 that._cometd.addListener('/service/sendPlayerId', function(message) {
                     var data = message.data;
+                    that.debug('playerId', data);
                     that._main.createTank(data.playerId, data.x, data.y);
                 });
                 that._cometd.subscribe('/game/connected', function(message) {
                     var data = message.data;
-                    that._main.addTank(data.playerId, data.x, data.y);
+                    that.debug('connected', data);
+                    console.log('getPlayerId()', that._main.getTank().getPlayerId());
+                    console.log('data.playerId', data.playerId);
+                    console.log('==', that._main.getTank().getPlayerId() != data.playerId);
+                    if(that._main.getTank().getPlayerId() != data.playerId) {
+                        that._main.addTank(data.playerId, data.x, data.y);
+                    }
                 });
                 that._cometd.subscribe('/game/disconnected', function(message) {
+                    that.debug('disconnected', message.data);
                     that._main.removeTank(message.data.playerId);
                 });
                 that._cometd.subscribe('/game/action', function(message) {
+                    that.debug('action', message.data);
                     that._main.performAction(message.data);
                 });
                 // Publish on a service channel since the message is for the server only

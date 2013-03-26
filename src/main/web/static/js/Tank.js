@@ -49,9 +49,9 @@ var Tank = (function() {
             World.BLOCK_SIZE
         );
         this._image.updateCache();
-        
-        main.addChild(this._image);
-        main.registerTick(this);
+
+        this._main.addChild(this._image);
+        this._main.registerTick(this);
 
         this._moving = false;
         this._direction = Direction.RIGHT;
@@ -156,6 +156,7 @@ var Tank = (function() {
     };
     
     Tank.prototype.rotate = function(direction) {
+        var rotated = false;
         if(this._direction != direction || !this._moving) {
 //            console.log('rotate to ' + direction.toString());
             this._direction = direction;
@@ -170,8 +171,12 @@ var Tank = (function() {
             }
             
             this._image.gotoAndPlay(direction.toString());
+            
+            
+            rotated = true;
         }
         this._moving = true;
+        return rotated;
     };
     
     Tank.prototype.shoot = function() {
@@ -180,6 +185,11 @@ var Tank = (function() {
     
     Tank.prototype.getDirection = function() {
         return this._direction;
+    };
+    
+    Tank.prototype.remove = function() {
+        this._main.unregisterTick(this);
+        this._main.removeChild(this._image);
     };
     
     return Tank;
