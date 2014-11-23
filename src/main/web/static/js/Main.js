@@ -36,6 +36,7 @@ var Main = new ((function() {
 
         this._tankRenderer = new TankRenderer(this);
         this._bulletRenderer = new BulletRenderer(this);
+        this._blockRenderer = new BlockRenderer(this);
 
         this._socket = new Socket(this);
         

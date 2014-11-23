@@ -1,38 +1,19 @@
 var Block = (function () {
-    function Block(main, type, point, frames, animations, collideFunc) {
+    var Block = function(main, type, point, collideFunc) {
+        this._id = guid();
         this._main = main;
         this._type = type;
         this._point = point;
-        this._frames = frames;
-        this._animations = animations;
         this._collideFunc = collideFunc;
-        
-        this._image = new createjs.Sprite(new createjs.SpriteSheet({
-            images: [main.getSpritesheet()],
-            frames: frames,
-            animations: animations
-        }));
-        
-        this._image.x = point.x;
-        this._image.y = point.y;
-        this._image.gotoAndPlay('first');
+        this._subtype = 'default';
+    };
 
-        this._main.addChild(this._image);
+    Block.prototype.getX = function() {
+        return this._point.x;
+    };
 
-    }
-
-    Block.prototype._updateFrames = function(frames) {
-        this._image = new createjs.Sprite(new createjs.SpriteSheet({
-            images: [this._main.getSpritesheet()],
-            frames: frames,
-            animations: this._animations
-        }));
-
-        this._image.x = this._point.x;
-        this._image.y = this._point.y;
-        this._image.gotoAndPlay('first');
-
-        this._main.addChild(this._image);
+    Block.prototype.getY = function() {
+        return this._point.y;
     };
     
     Block.prototype.collidesWith = function(entity, corners) {
@@ -63,116 +44,50 @@ var Block = (function () {
             main,
             BlockType.EMPTY,
             point,
-            [[0, 192, 16, 16, 0, 0, 0]],
-            {first: 0},
             function() {
                 return false;
             }
         );
     };
     
-    var helper = {
-        full: [16, 192, 16, 16, 0,  0,  0],
-        u:    [16, 192, 16,  8, 0,  0,  0],
-        d:    [16, 200, 16,  8, 0,  0, -8],
-        l:    [16, 192,  8, 16, 0,  0,  0],
-        r:    [24, 192,  8, 16, 0, -8,  0],
-        ul:   [16, 192,  8,  8, 0,  0,  0],
-        ur:   [24, 192,  8,  8, 0, -8,  0],
-        dl:   [16, 200,  8,  8, 0,  0, -8],
-        dr:   [24, 200,  8,  8, 0, -8, -8],
-        none: null
-    };
-    
-    // Я знаю, это все можно сделать компактнее.
-    // Но пусть останется так, во имя читабельности.
-    var transitions = {
-        full: {
-            left:   'l',
-            right:  'r',
-            up:     'u',
-            down:   'd'
-        },
-        u: {
-            left:   'ul',
-            right:  'ur',
-            up:     'none',
-            down:   'none'
-        },
-        d: {
-            left:   'dl',
-            right:  'dr',
-            up:     'none',
-            down:   'none'
-        },
-        l: {
-            left:   'none',
-            right:  'none',
-            up:     'ul',
-            down:   'dl'
-        },
-        r: {
-            left:   'none',
-            right:  'none',
-            up:     'ur',
-            down:   'dr'
-        },
-        ul: { left: 'none', right: 'none', up: 'none', down: 'none' },
-        ur: { left: 'none', right: 'none', up: 'none', down: 'none' },
-        dl: { left: 'none', right: 'none', up: 'none', down: 'none' },
-        dr: { left: 'none', right: 'none', up: 'none', down: 'none' }
-    };
-
     Block.BRICK = function(main, point) {
-        var block = new Block(
+        return new Block(
             main,
             BlockType.BRICK,
             point,
-            [helper.full],
-            {first: 0},
             function (entity, corners) {
-                if(this._type == 'none') {
+                if (this._subtype == 'none') {
                     return false;
-                } else if(entity instanceof Tank) {
+                } else if (entity instanceof Tank) {
                     return true;
                 }
-                
+
                 var collides = false;
 
-                var bounds = this._image.spriteSheet.getFrameBounds(this._image.currentFrame);
+                var bounds = BlockHelper.brick.subtypeBounds[this._subtype];
                 var pos = this.getPos();
 
                 var tl = new createjs.Point(pos.x + bounds.x, pos.y + bounds.y);
                 var br = new createjs.Point(pos.x + bounds.x + bounds.width, pos.y + bounds.y + bounds.height);
-                for(var i = 0; i < corners.length; i++) {
+                for (var i = 0; i < corners.length; i++) {
                     var c = corners[i];
-                    if(c.x >= tl.x && c.x <= br.x && c.y >= tl.y && c.y <= br.y) {
+                    if (c.x >= tl.x && c.x <= br.x && c.y >= tl.y && c.y <= br.y) {
                         collides = true;
                         break;
                     }
                 }
-                
-                if(collides && entity instanceof Bullet) {
-                    this._image.stop();
-                    this._main.removeChild(this._image);
-                    console.log(this._type, entity.getDirection().toString());
 
-                    var newType = transitions[this._type][entity.getDirection().toString()];
-                    this._type = newType;
-                    if(newType != 'none') {
-                        this._updateFrames([helper[newType]]);
-                    }
-                    
+                if (collides && entity instanceof Bullet) {
+                    console.log(this._subtype, entity.getDirection().toString());
+
+                    this._subtype = BlockHelper.brick.transitions[this._subtype][entity.getDirection().toString()];
                     return true;
                 } else {
                     return false;
                 }
-                
+
             }
         );
-        block._type = 'full';
-        
-        return block;
     };
 
     Block.STONE = function(main, point) {
@@ -180,8 +95,6 @@ var Block = (function () {
             main,
             BlockType.STONE,
             point,
-            [[32, 192, 16, 16, 0, 0, 0]],
-            {first: 0},
             function() {
                 return true;
             }
@@ -193,16 +106,6 @@ var Block = (function () {
             main,
             BlockType.WATER,
             point,
-            [
-                [0, 208, 16, 16, 0, 0, 0],
-                [16, 208, 16, 16, 0, 0, 0]
-            ],
-            {
-                first: {
-                    frames: [0, 1],
-                    speed: 0.03125
-                }
-            },
             function(entity) {
                 return entity instanceof Tank;
             }

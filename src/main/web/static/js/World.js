@@ -19,7 +19,14 @@ var World = (function () {
         this._main = main;
         
         this._level = [];
-        
+
+        var emptyBlock = {
+            collidesWith: function () {
+                return false;
+            }
+        };
+
+        // чтоб не забыть потом опять: эта хуйня рисует по четыре блока на один физический
         for(var x = 0; x < this._main.getWidth() / World.HALF_BLOCK_SIZE; x++) {
             this._level[x] = [];
             
@@ -33,11 +40,11 @@ var World = (function () {
                         level[lY][lX]
                     );
                 } else {
-                    this._level[x][y] = {
-                        collidesWith: function() {
-                            return false;
-                        }
-                    };
+                    this._level[x][y] = Block.ofType(
+                        main,
+                        new createjs.Point(x * World.HALF_BLOCK_SIZE, y * World.HALF_BLOCK_SIZE),
+                        BlockType.EMPTY
+                    );
                 }
             }
         }
