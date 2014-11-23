@@ -7,5 +7,8 @@ var app = {
         requirejs(['Main'], function(Main) {
             Main.init();
         });
+    },
+    stop: function() {
+
     }
 };

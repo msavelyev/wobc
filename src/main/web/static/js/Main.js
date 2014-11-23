@@ -36,9 +36,8 @@ define(
             this._fps.x = this._stage.canvas.width - 80;
             this._fps.y = 10;
 
-            //this._comet = new Comet(this);
-
-            this._tank = new Tank(this, new createjs.Point(32, 32), 0);
+            this._tank = null;
+            this._playerId = null;
 
             this._tankRenderer = new TankRenderer(this);
             this._bulletRenderer = new BulletRenderer(this);
@@ -70,8 +69,24 @@ define(
             return this._tank;
         };
 
-        obj.prototype.addTank = function (playerId, x, y) {
-            this._tanks[playerId] = new Tank(this, new createjs.Point(x, y), playerId);
+        obj.prototype.addPlayer = function(player) {
+            if(player.id != this._playerId) {
+                this.addTank(player.id, player.pos.x, player.pos.y, Direction.fromStr(player.direction));
+            }
+        };
+
+        obj.prototype.sync = function(player) {
+            var tank = this._tanks[player.id];
+            tank.setPos(player.pos);
+            tank._direction = Direction.fromStr(player.direction);
+            tank._moving = player.moving;
+        };
+
+        obj.prototype.addTank = function (playerId, x, y, direction) {
+            console.log('adding tank', playerId);
+            var tank = new Tank(this, new createjs.Point(x, y), playerId, direction);
+            this._tanks[playerId] = tank;
+            return tank;
         };
 
         obj.prototype.removeTank = function (playerId) {
@@ -80,8 +95,9 @@ define(
             delete this._tanks[playerId];
         };
 
-        obj.prototype.createTank = function (playerId, x, y) {
-            this._tank = new Tank(this, new createjs.Point(x, y), playerId);
+        obj.prototype.createOwnTank = function (data) {
+            this._playerId = data.id;
+            this._tank = this.addTank(data.id, data.pos.x, data.pos.y, Direction.fromStr(data.direction));
         };
 
         obj.prototype.stop = function () {
@@ -148,9 +164,9 @@ define(
 
             switch (e.keyCode) {
                 case Key.KEYCODE_SPACE:
-                    if (this._bullets.length <= playerId || !this._bullets[playerId]) {
+                    if (!this._bullets[playerId]) {
                         this._tank.shoot();
-                        //this._comet.send({playerId: playerId, type: 'shoot'});
+                        this._socket.shoot();
                     }
                     e.preventDefault();
                     return false;
@@ -200,6 +216,12 @@ define(
                     e.preventDefault();
                     return false;
             }
+        };
+
+        obj.prototype.shoot = function(player) {
+            this.sync(player);
+            var tank = this._tanks[player.id];
+            tank.shoot();
         };
 
         obj.prototype.performAction = function (data) {

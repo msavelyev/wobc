@@ -1,5 +1,6 @@
 define(['Direction', 'World', 'Bullet'], function(Direction, World, Bullet) {
-    var obj = function(main, point, playerId) {
+    var obj = function(main, point, playerId, direction) {
+        this._id = playerId;
         this._main = main;
         this._playerId = playerId;
 
@@ -9,7 +10,7 @@ define(['Direction', 'World', 'Bullet'], function(Direction, World, Bullet) {
         this._main.registerTick(this);
 
         this._moving = false;
-        this._direction = Direction.RIGHT;
+        this._direction = direction;
     };
     
     obj.prototype.tick = function(event) {
