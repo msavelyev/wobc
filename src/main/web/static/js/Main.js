@@ -31,6 +31,8 @@ var Main = new ((function() {
         //this._comet = new Comet(this);
         
         this._tank = new Tank(this, new createjs.Point(32, 32), 0);
+
+        this._tankRenderer = new TankRenderer(this);
         
         var that = this;
         createjs.Ticker.addEventListener(

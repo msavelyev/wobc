@@ -21,10 +21,6 @@ var Block = (function () {
 
     }
 
-    Block.prototype.tick = function(event) {
-        this._image.updateCache();
-    };
-    
     Block.prototype._updateFrames = function(frames) {
         this._image = new createjs.Sprite(new createjs.SpriteSheet({
             images: [this._main.getSpritesheet()],

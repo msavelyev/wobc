@@ -6,51 +6,7 @@ var Tank = (function() {
 
         this._point = new createjs.Point();
         
-        this._image = new createjs.Sprite(new createjs.SpriteSheet({
-            images: [main.getSpritesheet()],
-            frames: [
-                [0,   224, 32, 32, 0, 16, 16],
-                [32,  224, 32, 32, 0, 16, 16],
-                [64,  224, 32, 32, 0, 16, 16],
-                [96,  224, 32, 32, 0, 16, 16],
-                [128, 224, 32, 32, 0, 16, 16],
-                [160, 224, 32, 32, 0, 16, 16],
-                [192, 224, 32, 32, 0, 16, 16],
-                [224, 224, 32, 32, 0, 16, 16]
-            ],
-            animations: {
-                up: {
-                    frames: [0, 1],
-                    frequency: 0.25
-                },
-                right: {
-                    frames: [2, 3],
-                    frequency: 0.25
-                },
-                down: {
-                    frames: [4, 5],
-                    frequency: 0.25
-                },
-                left: {
-                    frames: [6, 7],
-                    frequency: 0.25
-                }
-            }
-        }));
         this.setPos(point);
-        this._image.gotoAndStop('right');
-        this._image.filters = [
-            new createjs.ColorFilter(.9, .9, 0, 1, 0, 0, 0)
-        ];
-        this._image.cache(
-            -World.HALF_BLOCK_SIZE,
-            -World.HALF_BLOCK_SIZE,
-            World.BLOCK_SIZE,
-            World.BLOCK_SIZE
-        );
-        this._image.updateCache();
-
-        this._main.addChild(this._image);
         this._main.registerTick(this);
 
         this._moving = false;
@@ -92,13 +48,11 @@ var Tank = (function() {
             if(newY > this._main.getHeight() - World.BLOCK_SIZE / 2) {
                 newY = this._main.getHeight() - World.BLOCK_SIZE / 2;
             }
-            
+
             this.setPos(new createjs.Point(newX, newY));
             if(this._main.collidesWith(this)) {
                 this.setPos(new createjs.Point(oldX, oldY));
             }
-
-            this._image.updateCache();
         }
     };
     
@@ -108,12 +62,10 @@ var Tank = (function() {
     
     Tank.prototype.setX = function(x) {
         this._point.x = x;
-        this._image.x = this._point.x;
     };
     
     Tank.prototype.setY = function(y) {
         this._point.y = y;
-        this._image.y = this._point.y;
     };
     
     Tank.prototype.getX = function() {
@@ -125,7 +77,6 @@ var Tank = (function() {
     };
     
     Tank.prototype.setPos = function(pos) {
-//        console.log('new tank pos ' + pos.x + ';' + pos.y);
         this.setX(pos.x);
         this.setY(pos.y);
     };
@@ -152,14 +103,11 @@ var Tank = (function() {
 
     Tank.prototype.stopMoving = function() {
         this._moving = false;
-//        this._direction = undefined;
-        this._image.stop();
     };
     
     Tank.prototype.rotate = function(direction) {
         var rotated = false;
         if(this._direction != direction || !this._moving) {
-//            console.log('rotate to ' + direction.toString());
             this._direction = direction;
             
             switch(this._direction.getType()) {
@@ -170,9 +118,6 @@ var Tank = (function() {
                     this._fixVertically();
                     break;
             }
-            
-            this._image.gotoAndPlay(direction.toString());
-            
             
             rotated = true;
         }
