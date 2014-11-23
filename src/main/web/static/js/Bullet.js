@@ -1,5 +1,5 @@
-var Bullet = (function () {
-    function Bullet(main, tank) {
+define(['guid', 'Direction'], function (guid, Direction) {
+    var obj = function(main, tank) {
         this._id = guid();
         this._main = main;
         this._tank = tank;
@@ -30,43 +30,43 @@ var Bullet = (function () {
         
         this._main.registerTick(this);
         this._main.addBullet(this, this._tank.getPlayerId());
-    }
+    };
     
-    Bullet.prototype.getWidth = function() {
+    obj.prototype.getWidth = function() {
         return this._width;
     };
 
-    Bullet.prototype.getHeight = function() {
+    obj.prototype.getHeight = function() {
         return this._height;
     };
 
-    Bullet.prototype.setX = function(x) {
+    obj.prototype.setX = function(x) {
         this._point.x = x;
     };
 
-    Bullet.prototype.setY = function(y) {
+    obj.prototype.setY = function(y) {
         this._point.y = y;
     };
 
-    Bullet.prototype.getX = function() {
+    obj.prototype.getX = function() {
         return this._point.x;
     };
 
-    Bullet.prototype.getY = function() {
+    obj.prototype.getY = function() {
         return this._point.y;
     };
 
-    Bullet.prototype.setPos = function(pos) {
+    obj.prototype.setPos = function(pos) {
 //        console.log('newPos ' + pos.x + ';' + pos.y);
         this.setX(pos.x);
         this.setY(pos.y);
     };
 
-    Bullet.prototype.getPos = function() {
+    obj.prototype.getPos = function() {
         return new createjs.Point(this.getX(), this.getY());
     };
     
-    Bullet.prototype.tick = function(event) {
+    obj.prototype.tick = function(event) {
         var diff = event.delta / 1000 * 400;
 
         var newY = this.getY();
@@ -99,9 +99,9 @@ var Bullet = (function () {
         }
     };
     
-    Bullet.prototype.getDirection = function() {
+    obj.prototype.getDirection = function() {
         return this._direction;
     };
     
-    return Bullet;
-})();
+    return obj;
+});

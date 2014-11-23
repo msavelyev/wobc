@@ -1,4 +1,4 @@
-var BlockHelper = (function() {
+define(function() {
     var bounds = function(x, y, w, h) {
         return {
             x: x,
@@ -101,4 +101,4 @@ var BlockHelper = (function() {
             }
         }
     };
-})();
+});

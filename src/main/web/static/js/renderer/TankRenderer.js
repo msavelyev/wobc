@@ -1,5 +1,5 @@
-var TankRenderer = (function () {
-    function TankRenderer(main) {
+define(['World'], function (World) {
+    var obj = function (main) {
         this._main = main;
 
         this._image = new createjs.Sprite(new createjs.SpriteSheet({
@@ -55,14 +55,14 @@ var TankRenderer = (function () {
         this.updatePos();
 
         this._main.registerTick(this);
-    }
+    };
 
-    TankRenderer.prototype.updatePos = function() {
+    obj.prototype.updatePos = function() {
         this._image.x = this._tank.getX();
         this._image.y = this._tank.getY();
     };
 
-    TankRenderer.prototype.tick = function(event) {
+    obj.prototype.tick = function(event) {
         this.updatePos();
         if(this._tank._moving) {
             this._image.updateCache();
@@ -75,5 +75,5 @@ var TankRenderer = (function () {
         }
     };
 
-    return TankRenderer;
-})();
+    return obj;
+});

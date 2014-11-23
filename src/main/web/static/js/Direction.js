@@ -1,5 +1,5 @@
-var Direction = (function() {
-    var Direction = function(degree, keys, str, type) {
+define(['Key'], function(Key) {
+    var obj = function(degree, keys, str, type) {
         this._degree = degree;
         this._keys = keys;
         this._str = str;
@@ -7,56 +7,55 @@ var Direction = (function() {
         
         var that = this;
         this._keys.forEach(function(key) {
-            Direction._keys[key] = that;
+            obj._keys[key] = that;
         });
     };
     
-    Direction.prototype.getDegree = function() {
+    obj.prototype.getDegree = function() {
         return this._degree;
     };
     
-    Direction.prototype.toString = function () {
+    obj.prototype.toString = function () {
         return this._str;
     };
     
-    Direction.prototype.getType = function() {
+    obj.prototype.getType = function() {
         return this._type;
     };
     
-    Direction.prototype.letter = function() {
+    obj.prototype.letter = function() {
         return this._str[0];
     };
-    
-    return Direction;
-})();
 
-Direction._keys = {};
-Direction.fromKey = function(keycode) {
-    if(Direction._keys[keycode]) {
-        return Direction._keys[keycode];
-    }
-};
+    obj._keys = {};
+    obj.fromKey = function(keycode) {
+        if(obj._keys[keycode]) {
+            return obj._keys[keycode];
+        }
+    };
 
-Direction.VERT = 'vert';
-Direction.HORI = 'hori';
+    obj.VERT = 'vert';
+    obj.HORI = 'hori';
 
-Direction.UP = new Direction(270, [Key.KEYCODE_W, Key.KEYCODE_UP], 'up', Direction.VERT);
-Direction.DOWN = new Direction(90, [Key.KEYCODE_S, Key.KEYCODE_DOWN], 'down', Direction.VERT);
-Direction.LEFT = new Direction(180, [Key.KEYCODE_A, Key.KEYCODE_LEFT], 'left', Direction.HORI);
-Direction.RIGHT = new Direction(0, [Key.KEYCODE_D, Key.KEYCODE_RIGHT], 'right', Direction.HORI);
+    obj.UP = new obj(270, [Key.KEYCODE_W, Key.KEYCODE_UP], 'up', obj.VERT);
+    obj.DOWN = new obj(90, [Key.KEYCODE_S, Key.KEYCODE_DOWN], 'down', obj.VERT);
+    obj.LEFT = new obj(180, [Key.KEYCODE_A, Key.KEYCODE_LEFT], 'left', obj.HORI);
+    obj.RIGHT = new obj(0, [Key.KEYCODE_D, Key.KEYCODE_RIGHT], 'right', obj.HORI);
 
-Direction.fromStr = function(str) {
-    switch(str) {
-        case 'up':
-            return Direction.UP;
-        case 'down':
-            return Direction.DOWN;
-        case 'left':
-            return Direction.LEFT;
-        case 'right':
-            return Direction.RIGHT;
-        default:
-            console.log('wrong direction', str);
-    }
-};
+    obj.fromStr = function(str) {
+        switch(str) {
+            case 'up':
+                return obj.UP;
+            case 'down':
+                return obj.DOWN;
+            case 'left':
+                return obj.LEFT;
+            case 'right':
+                return obj.RIGHT;
+            default:
+                console.log('wrong direction', str);
+        }
+    };
 
+    return obj;
+});

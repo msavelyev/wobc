@@ -7,41 +7,20 @@
             port: 8080
         };
     </script>
-
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-
+    <script type="text/javascript" src="//cdn.socket.io/socket.io-1.2.1.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.15/require.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore.js"></script>
-
     <script type="text/javascript" src="//code.createjs.com/easeljs-0.7.1.min.js"></script>
+    <script type="text/javascript" src="static/js/app.js"></script>
+
     <script type="text/javascript" src="static/js/easeljs/filters/Filter.js"></script>
     <script type="text/javascript" src="static/js/easeljs/filters/ColorFilter.js"></script>
 
-
-    <script type="text/javascript" src="static/js/Key.js"></script>
-    <script type="text/javascript" src="static/js/Direction.js"></script>
-    
-    <script type="text/javascript" src="static/js/BlockType.js"></script>
-    <script type="text/javascript" src="static/js/Block.js"></script>
-    <script type="text/javascript" src="static/js/DebugGrid.js"></script>
-    <script type="text/javascript" src="static/js/Explode.js"></script>
-    <script type="text/javascript" src="static/js/Bullet.js"></script>
-    <script type="text/javascript" src="static/js/World.js"></script>
-    <script type="text/javascript" src="static/js/Tank.js"></script>
     <!--<script type="text/javascript" src="static/js/Comet.js"></script>-->
-    <script type="text/javascript" src="static/js/Main.js"></script>
-    <script type="text/javascript" src="static/js/guid.js"></script>
-    <script type="text/javascript" src="static/js/BlockHelper.js"></script>
 
-    <script type="text/javascript" src="static/js/renderer/TankRenderer.js"></script>
-    <script type="text/javascript" src="static/js/renderer/BulletRenderer.js"></script>
-    <script type="text/javascript" src="static/js/renderer/BlockRenderer.js"></script>
-
-    <script type="text/javascript" src="static/js/Socket.js"></script>
-
-    
     <link rel="stylesheet" type="text/css" href="static/css/main.css" />
 </head>
-<body onload="Main.init();" onbeforeunload="Main.stop();">
+<body onload="app.init();" onbeforeunload="app.stop();">
 <img src="/static/images/true_sprites.png" id="spritesheet" style="display: none;"/>
 
 <canvas id="canvas" width="800" height="576">

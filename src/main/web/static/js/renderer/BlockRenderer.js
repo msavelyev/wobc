@@ -1,4 +1,4 @@
-var BlockRenderer = (function() {
+define(['BlockType', 'BlockHelper'], function(BlockType, BlockHelper) {
     var obj = function(main) {
         this._main = main;
         this._main.registerTick(this);
@@ -85,4 +85,4 @@ var BlockRenderer = (function() {
     };
 
     return obj;
-})();
+});

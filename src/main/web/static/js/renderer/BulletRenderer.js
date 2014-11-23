@@ -1,4 +1,4 @@
-var BulletRenderer = (function() {
+define(['Explode', 'Direction'], function(Explode, Direction) {
     var obj = function(main) {
         this._main = main;
         this._main.registerTick(this);
@@ -80,4 +80,4 @@ var BulletRenderer = (function() {
     };
 
     return obj;
-})();
+});

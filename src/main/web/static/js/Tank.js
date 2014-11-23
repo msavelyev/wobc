@@ -1,6 +1,5 @@
-var Tank = (function() {
-    
-    function Tank(main, point, playerId) {
+define(['Direction', 'World', 'Bullet'], function(Direction, World, Bullet) {
+    var obj = function(main, point, playerId) {
         this._main = main;
         this._playerId = playerId;
 
@@ -11,9 +10,9 @@ var Tank = (function() {
 
         this._moving = false;
         this._direction = Direction.RIGHT;
-    }
+    };
     
-    Tank.prototype.tick = function(event) {
+    obj.prototype.tick = function(event) {
         if(this._moving) {
             var oldX = this.getX();
             var oldY = this.getY();
@@ -56,56 +55,56 @@ var Tank = (function() {
         }
     };
     
-    Tank.prototype.getPlayerId = function() {
+    obj.prototype.getPlayerId = function() {
         return this._playerId;
     };
     
-    Tank.prototype.setX = function(x) {
+    obj.prototype.setX = function(x) {
         this._point.x = x;
     };
     
-    Tank.prototype.setY = function(y) {
+    obj.prototype.setY = function(y) {
         this._point.y = y;
     };
     
-    Tank.prototype.getX = function() {
+    obj.prototype.getX = function() {
         return this._point.x;
     };
 
-    Tank.prototype.getY = function() {
+    obj.prototype.getY = function() {
         return this._point.y;
     };
     
-    Tank.prototype.setPos = function(pos) {
+    obj.prototype.setPos = function(pos) {
         this.setX(pos.x);
         this.setY(pos.y);
     };
     
-    Tank.prototype.getWidth = function() {
+    obj.prototype.getWidth = function() {
         return World.BLOCK_SIZE;
     };
 
-    Tank.prototype.getHeight = function() {
+    obj.prototype.getHeight = function() {
         return World.BLOCK_SIZE;
     };
     
-    Tank.prototype.getPos = function() {
+    obj.prototype.getPos = function() {
         return new createjs.Point(this.getX(), this.getY());
     };
     
-    Tank.prototype._fixHorizontally = function() {
+    obj.prototype._fixHorizontally = function() {
         this.setX(World.HALF_BLOCK_SIZE * Math.round(this.getX() / World.HALF_BLOCK_SIZE));
     };
 
-    Tank.prototype._fixVertically = function() {
+    obj.prototype._fixVertically = function() {
         this.setY(World.HALF_BLOCK_SIZE * Math.round(this.getY() / World.HALF_BLOCK_SIZE));
     };
 
-    Tank.prototype.stopMoving = function() {
+    obj.prototype.stopMoving = function() {
         this._moving = false;
     };
     
-    Tank.prototype.rotate = function(direction) {
+    obj.prototype.rotate = function(direction) {
         var rotated = false;
         if(this._direction != direction || !this._moving) {
             this._direction = direction;
@@ -125,18 +124,18 @@ var Tank = (function() {
         return rotated;
     };
     
-    Tank.prototype.shoot = function() {
+    obj.prototype.shoot = function() {
         new Bullet(this._main, this);
     };
     
-    Tank.prototype.getDirection = function() {
+    obj.prototype.getDirection = function() {
         return this._direction;
     };
     
-    Tank.prototype.remove = function() {
+    obj.prototype.remove = function() {
         this._main.unregisterTick(this);
         this._main.removeChild(this._image);
     };
     
-    return Tank;
-})();
+    return obj;
+});

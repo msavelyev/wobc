@@ -1,4 +1,4 @@
-var Key = new ((function () {
+define(function () {
     var obj = function() {
         this.KEYCODE_ENTER = 13;
         this.KEYCODE_SPACE = 32;
@@ -11,6 +11,6 @@ var Key = new ((function () {
         this.KEYCODE_D = 68;
         this.KEYCODE_S = 83;
     };
-    
-    return obj;
-})());
+
+    return new obj();
+});

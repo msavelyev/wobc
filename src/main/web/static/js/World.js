@@ -1,6 +1,5 @@
-var World = (function () {
-    
-    function World(main) {
+define(['Block', 'BlockType'], function (Block, BlockType) {
+    var obj = function(main) {
         var level = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 2, 2, 2, 0, 3, 3, 3, 0],
@@ -20,41 +19,35 @@ var World = (function () {
         
         this._level = [];
 
-        var emptyBlock = {
-            collidesWith: function () {
-                return false;
-            }
-        };
-
         // чтоб не забыть потом опять: эта хуйня рисует по четыре блока на один физический
-        for(var x = 0; x < this._main.getWidth() / World.HALF_BLOCK_SIZE; x++) {
+        for(var x = 0; x < this._main.getWidth() / obj.HALF_BLOCK_SIZE; x++) {
             this._level[x] = [];
             
-            for(var y = 0; y < this._main.getHeight() / World.HALF_BLOCK_SIZE; y++) {
+            for(var y = 0; y < this._main.getHeight() / obj.HALF_BLOCK_SIZE; y++) {
                 var lX = Math.floor(x / 2);
                 var lY = Math.floor(y / 2);
                 if(lX < level.length && lY < level[lX].length && level[lY][lX]) {
                     this._level[x][y] = Block.ofType(
                         main,
-                        new createjs.Point(x * World.HALF_BLOCK_SIZE, y * World.HALF_BLOCK_SIZE),
+                        new createjs.Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
                         level[lY][lX]
                     );
                 } else {
                     this._level[x][y] = Block.ofType(
                         main,
-                        new createjs.Point(x * World.HALF_BLOCK_SIZE, y * World.HALF_BLOCK_SIZE),
+                        new createjs.Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
                         BlockType.EMPTY
                     );
                 }
             }
         }
-    }
+    };
     
-    World.prototype.collidesWith = function(entity) {
+    obj.prototype.collidesWith = function(entity) {
         var pointToBlockPos = function(point) {
             return {
-                x: Math.floor(point.x / World.HALF_BLOCK_SIZE),
-                y: Math.floor(point.y / World.HALF_BLOCK_SIZE)
+                x: Math.floor(point.x / obj.HALF_BLOCK_SIZE),
+                y: Math.floor(point.y / obj.HALF_BLOCK_SIZE)
             };
         };
         
@@ -83,10 +76,10 @@ var World = (function () {
              | this._level[bl.x][bl.y].collidesWith(entity, corners)
              | this._level[br.x][br.y].collidesWith(entity, corners);
     };
-    
-    return World;
-})();
 
-World.BLOCK_SIZE = 32;
-World.HALF_BLOCK_SIZE = World.BLOCK_SIZE / 2;
-World.Q_BLOCK_SIZE = World.HALF_BLOCK_SIZE / 2;
+    obj.BLOCK_SIZE = 32;
+    obj.HALF_BLOCK_SIZE = obj.BLOCK_SIZE / 2;
+    obj.Q_BLOCK_SIZE = obj.HALF_BLOCK_SIZE / 2;
+    
+    return obj;
+});

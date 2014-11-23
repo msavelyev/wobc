@@ -4,6 +4,15 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var _ = require('underscore');
 
+var rjs = require('requirejs');
+rjs.config({
+    nodeRequire: require
+});
+
+var guid = rjs('./static/js/guid');
+
+console.log(guid);
+
 server.listen(8080);
 
 app.get('/', function(req, res) {

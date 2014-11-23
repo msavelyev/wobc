@@ -1,5 +1,5 @@
-var DebugGrid = (function () {
-    function DebugGrid(main) {
+define(['World'], function (World) {
+    return function(main) {
         this._grid = new createjs.Shape();
         var graph = this._grid.graphics;
         graph.beginStroke('rgba(255, 255, 255, 0.3)');
@@ -13,7 +13,5 @@ var DebugGrid = (function () {
         }
 
         main.addChild(this._grid);
-    }
-    
-    return DebugGrid;
-})();
+    };
+});
