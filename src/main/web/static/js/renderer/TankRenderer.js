@@ -51,6 +51,7 @@ var TankRenderer = (function () {
         this._main.registerTick(this);
 
         this._tank = this._main._tank;
+        this._direction = this._tank._direction;
         this.updatePos();
 
         this._main.registerTick(this);
@@ -65,7 +66,10 @@ var TankRenderer = (function () {
         this.updatePos();
         if(this._tank._moving) {
             this._image.updateCache();
-            this._image.gotoAndPlay(this._tank._direction.toString());
+            if(this._image.paused || this._direction != this._tank._direction) {
+                this._direction = this._tank._direction;
+                this._image.gotoAndPlay(this._direction.toString());
+            }
         } else {
             this._image.stop();
         }

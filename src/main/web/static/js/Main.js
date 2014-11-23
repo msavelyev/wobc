@@ -1,4 +1,6 @@
 var Main = new ((function() {
+    var Main = function() {};
+
     Main.prototype._tick = function(event) {
         this._fps.text = '' + (Math.round(createjs.Ticker.getMeasuredFPS() * 100) / 100) + ' FPS';
 
@@ -131,7 +133,7 @@ var Main = new ((function() {
     };
 
     Main.prototype._handleKeyDown = function(e) {
-        if(!e){ e = window.event; }
+        e = e || event;
         
         var playerId = this._tank.getPlayerId();
 
@@ -155,7 +157,7 @@ var Main = new ((function() {
             case Key.KEYCODE_DOWN:
                 var direction = Direction.fromKey(e.keyCode);
                 var result = this._tank.rotate(direction);
-                
+
                 if(result) {
                     /*this._comet.send({
                         playerId: playerId,
@@ -169,7 +171,7 @@ var Main = new ((function() {
     };
 
     Main.prototype._handleKeyUp = function(e) {
-        if(!e){ e = window.event; }
+        e = e || event;
 
         console.log('keyUp', e.keyCode);
         
@@ -187,6 +189,7 @@ var Main = new ((function() {
                     var playerId = this._tank.getPlayerId();
                     //this._comet.send({playerId: playerId, type: 'stop'});
                 }
+            case Key.KEYCODE_SPACE:
                 e.preventDefault();
                 return false;
         }
@@ -209,8 +212,6 @@ var Main = new ((function() {
             }
         }
     };
-    
-    function Main() { }
     
     return Main;
 })());

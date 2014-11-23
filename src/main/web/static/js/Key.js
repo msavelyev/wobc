@@ -1,5 +1,5 @@
 var Key = new ((function () {
-    function Key() {
+    var obj = function() {
         this.KEYCODE_ENTER = 13;
         this.KEYCODE_SPACE = 32;
         this.KEYCODE_UP = 38;
@@ -12,5 +12,5 @@ var Key = new ((function () {
         this.KEYCODE_S = 83;
     };
     
-    return Key;
+    return obj;
 })());

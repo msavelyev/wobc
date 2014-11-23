@@ -1,5 +1,5 @@
 var Direction = (function() {
-    function Direction(degree, keys, str, type) {
+    var Direction = function(degree, keys, str, type) {
         this._degree = degree;
         this._keys = keys;
         this._str = str;
