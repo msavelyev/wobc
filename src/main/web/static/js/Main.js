@@ -34,6 +34,8 @@ var Main = new ((function() {
 
         this._tankRenderer = new TankRenderer(this);
         this._bulletRenderer = new BulletRenderer(this);
+
+        this._socket = new Socket(this);
         
         var that = this;
         createjs.Ticker.addEventListener(
