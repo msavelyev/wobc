@@ -9,8 +9,8 @@ var Main = new ((function() {
         this._stage = new createjs.Stage('canvas');
         
         this._ticks = [];
-        this._bullets = [];
-        this._tanks = [];
+        this._bullets = {};
+        this._tanks = {};
 
         this._spritesheet = document.getElementById('spritesheet');
 
@@ -33,6 +33,7 @@ var Main = new ((function() {
         this._tank = new Tank(this, new createjs.Point(32, 32), 0);
 
         this._tankRenderer = new TankRenderer(this);
+        this._bulletRenderer = new BulletRenderer(this);
         
         var that = this;
         createjs.Ticker.addEventListener(
@@ -131,6 +132,9 @@ var Main = new ((function() {
         if(!e){ e = window.event; }
         
         var playerId = this._tank.getPlayerId();
+
+        console.log('keyDown', e.keyCode);
+
         switch(e.keyCode) {
             case Key.KEYCODE_SPACE:
                 if(this._bullets.length <= playerId || !this._bullets[playerId]) {
@@ -164,6 +168,8 @@ var Main = new ((function() {
 
     Main.prototype._handleKeyUp = function(e) {
         if(!e){ e = window.event; }
+
+        console.log('keyUp', e.keyCode);
         
         switch(e.keyCode) {
             case Key.KEYCODE_A:

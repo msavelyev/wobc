@@ -27,7 +27,7 @@ var Explode = (function () {
     
     Explode.prototype.tick = function(event) {
         if(this._image.currentFrame == 3) {
-            this._main.removeChild(this);
+            this._main.removeChild(this._image);
             this._main.unregisterTick(this);
             this._image.stop();
         }
