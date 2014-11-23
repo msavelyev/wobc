@@ -1,7 +1,7 @@
 var Explode = (function () {
     function Explode(main, point) {
         this._main = main;
-        this._image = new createjs.BitmapAnimation(new createjs.SpriteSheet({
+        this._image = new createjs.Sprite(new createjs.SpriteSheet({
             images: [main.getSpritesheet()],
             frames: [
                 [256, 192, 32, 32, 0, 16, 16],
@@ -12,7 +12,7 @@ var Explode = (function () {
             animations: {
                 first: {
                     frames: [0, 1, 2, 3],
-                    frequency: 3
+                    speed: 0.33
                 }
             }
         }));
@@ -23,7 +23,7 @@ var Explode = (function () {
         
         this._main.addChild(this._image);
         this._main.registerTick(this);
-    };
+    }
     
     Explode.prototype.tick = function(event) {
         if(this._image.currentFrame == 3) {

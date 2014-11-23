@@ -12,8 +12,7 @@ var Main = new ((function() {
         this._bullets = [];
         this._tanks = [];
 
-        this._spritesheet = new Image();
-        this._spritesheet.src = "static/images/true_sprites.png";
+        this._spritesheet = document.getElementById('spritesheet');
 
         this._world = new World(this);
 

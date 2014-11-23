@@ -13,7 +13,7 @@ var DebugGrid = (function () {
         }
 
         main.addChild(this._grid);
-    };
+    }
     
     return DebugGrid;
 })();

@@ -62,7 +62,7 @@ var Bullet = (function () {
         this._main.addBullet(this, tank.getPlayerId());
 //        console.log('created bullet');
         
-    };
+    }
     
     Bullet.prototype.getWidth = function() {
         return this._width;

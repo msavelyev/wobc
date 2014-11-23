@@ -6,7 +6,7 @@ var Tank = (function() {
 
         this._point = new createjs.Point();
         
-        this._image = new createjs.BitmapAnimation(new createjs.SpriteSheet({
+        this._image = new createjs.Sprite(new createjs.SpriteSheet({
             images: [main.getSpritesheet()],
             frames: [
                 [0,   224, 32, 32, 0, 16, 16],
@@ -21,19 +21,19 @@ var Tank = (function() {
             animations: {
                 up: {
                     frames: [0, 1],
-                    frequency: 4
+                    frequency: 0.25
                 },
                 right: {
                     frames: [2, 3],
-                    frequency: 4
+                    frequency: 0.25
                 },
                 down: {
                     frames: [4, 5],
-                    frequency: 4
+                    frequency: 0.25
                 },
                 left: {
                     frames: [6, 7],
-                    frequency: 4
+                    frequency: 0.25
                 }
             }
         }));
@@ -55,7 +55,7 @@ var Tank = (function() {
 
         this._moving = false;
         this._direction = Direction.RIGHT;
-    };
+    }
     
     Tank.prototype.tick = function(event) {
         if(this._moving) {
@@ -97,6 +97,7 @@ var Tank = (function() {
             if(this._main.collidesWith(this)) {
                 this.setPos(new createjs.Point(oldX, oldY));
             }
+
             this._image.updateCache();
         }
     };

@@ -7,7 +7,7 @@ var Block = (function () {
         this._animations = animations;
         this._collideFunc = collideFunc;
         
-        this._image = new createjs.BitmapAnimation(new createjs.SpriteSheet({
+        this._image = new createjs.Sprite(new createjs.SpriteSheet({
             images: [main.getSpritesheet()],
             frames: frames,
             animations: animations
@@ -16,12 +16,17 @@ var Block = (function () {
         this._image.x = point.x;
         this._image.y = point.y;
         this._image.gotoAndPlay('first');
-        
+
         this._main.addChild(this._image);
+
+    }
+
+    Block.prototype.tick = function(event) {
+        this._image.updateCache();
     };
     
     Block.prototype._updateFrames = function(frames) {
-        this._image = new createjs.BitmapAnimation(new createjs.SpriteSheet({
+        this._image = new createjs.Sprite(new createjs.SpriteSheet({
             images: [this._main.getSpritesheet()],
             frames: frames,
             animations: this._animations
@@ -199,7 +204,7 @@ var Block = (function () {
             {
                 first: {
                     frames: [0, 1],
-                    frequency: 32
+                    speed: 0.03125
                 }
             },
             function(entity) {
