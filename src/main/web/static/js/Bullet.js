@@ -6,19 +6,15 @@ var Bullet = (function () {
         this._direction = tank.getDirection();
         this._point = new createjs.Point();
 
-        var x, y, width, height, regX, regY;
+        var width, height;
         switch(this._direction) {
             case Direction.UP:
-                x = 96; y = 192; width = 6; height = 8; regX = 3; regY = 4;
-                break;
             case Direction.DOWN:
-                x = 96; y = 208; width = 6; height = 8; regX = 3; regY = 4;
+                width = 6; height = 8;
                 break;
             case Direction.LEFT:
-                x = 112; y = 192; width = 8; height = 6; regX = 4; regY = 3;
-                break;
             case Direction.RIGHT:
-                x = 112; y = 208; width = 8; height = 6; regX = 4; regY = 3;
+                width = 8; height = 6;
                 break;
         }
 
