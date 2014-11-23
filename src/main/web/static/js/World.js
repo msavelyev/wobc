@@ -18,10 +18,10 @@ var World = (function () {
         
         this._main = main;
         
-        this._level = Array();
+        this._level = [];
         
         for(var x = 0; x < this._main.getWidth() / World.HALF_BLOCK_SIZE; x++) {
-            this._level[x] = new Array();
+            this._level[x] = [];
             
             for(var y = 0; y < this._main.getHeight() / World.HALF_BLOCK_SIZE; y++) {
                 var lX = Math.floor(x / 2);
@@ -41,7 +41,7 @@ var World = (function () {
                 }
             }
         }
-    };
+    }
     
     World.prototype.collidesWith = function(entity) {
         var pointToBlockPos = function(point) {

@@ -29,7 +29,7 @@ var Main = new ((function() {
         this._fps.x = this._stage.canvas.width - 80;
         this._fps.y = 10;
         
-        this._comet = new Comet(this);
+        //this._comet = new Comet(this);
         
         this._tank = new Tank(this, new createjs.Point(32, 32), 0);
         
@@ -72,7 +72,7 @@ var Main = new ((function() {
     };
     
     Main.prototype.stop = function() {
-        this._comet.disconnect(this._tank.getPlayerId());
+        //this._comet.disconnect(this._tank.getPlayerId());
     };
     
     Main.prototype.collidesWith = function(entity) {
@@ -134,7 +134,7 @@ var Main = new ((function() {
             case Key.KEYCODE_SPACE:
                 if(this._bullets.length <= playerId || !this._bullets[playerId]) {
                     this._tank.shoot();
-                    this._comet.send({playerId: playerId, type: 'shoot'});
+                    //this._comet.send({playerId: playerId, type: 'shoot'});
                 }
                 e.preventDefault();
                 return false;
@@ -150,16 +150,16 @@ var Main = new ((function() {
                 var result = this._tank.rotate(direction);
                 
                 if(result) {
-                    this._comet.send({
+                    /*this._comet.send({
                         playerId: playerId,
                         type: 'move',
                         direction: direction.toString()
-                    });
+                    });*/
                 }
                 e.preventDefault();
                 return false;
         }
-    }
+    };
 
     Main.prototype._handleKeyUp = function(e) {
         if(!e){ e = window.event; }
@@ -176,12 +176,12 @@ var Main = new ((function() {
                 if(this._tank.getDirection() == Direction.fromKey(e.keyCode)) {
                     this._tank.stopMoving();
                     var playerId = this._tank.getPlayerId();
-                    this._comet.send({playerId: playerId, type: 'stop'});
+                    //this._comet.send({playerId: playerId, type: 'stop'});
                 }
                 e.preventDefault();
                 return false;
         }
-    }
+    };
     
     Main.prototype.performAction = function(data) {
         var playerId = data.playerId;
@@ -201,7 +201,7 @@ var Main = new ((function() {
         }
     };
     
-    function Main() { };
+    function Main() { }
     
     return Main;
 })());

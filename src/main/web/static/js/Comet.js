@@ -4,7 +4,7 @@ var Comet = (function () {
         this._cometd = $.cometd;
 
         this._cometd.configure({
-            url: "http://54.225.155.22:8080/cometd",
+            url: "http://" + config.host + "/cometd",
             logLevel: 'info'
         });
         
@@ -19,7 +19,7 @@ var Comet = (function () {
         });
 
         this._cometd.handshake();
-    };
+    }
     
     Comet.prototype.disconnect = function(playerId) {
         this._cometd.publish('/service/disconnected', {playerId: playerId});
