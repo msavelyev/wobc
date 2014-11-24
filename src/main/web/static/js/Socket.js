@@ -16,6 +16,11 @@ define(function() {
             that._main.addPlayer(player);
         });
 
+        this._socket.on('disconnected', function(playerId) {
+           console.log('disconnected', playerId);
+            that._main.removeTank(playerId);
+        });
+
         this._socket.on('players', function(players) {
             _.each(players, function(player) {
                 that._main.addPlayer(player);

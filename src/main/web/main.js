@@ -39,7 +39,8 @@ var simplePlayers = function() {
 
 io.on('connection', function(socket) {
     var id = guid();
-    socketIdToPlayerId[socket.client.id] = id;
+    var socketId = socket.client.id;
+    socketIdToPlayerId[socketId] = id;
     console.log('connected', id);
 
     players[id] = {
@@ -59,14 +60,14 @@ io.on('connection', function(socket) {
 
     socket.on('shoot', function() {
         console.log('someone is shooting');
-        var id = socketIdToPlayerId[socket.client.id];
+        var id = socketIdToPlayerId[socketId];
         var player = createSimplePlayer(players[id]);
 
         socket.broadcast.emit('shoot', player);
     });
 
     socket.on('rotate', function(direction) {
-        var id = socketIdToPlayerId[socket.client.id];
+        var id = socketIdToPlayerId[socketId];
         var player = players[id];
         player.direction = direction;
         player.moving = true;
@@ -74,10 +75,17 @@ io.on('connection', function(socket) {
     });
 
     socket.on('stop', function() {
-        var id = socketIdToPlayerId[socket.client.id];
+        var id = socketIdToPlayerId[socketId];
         var player = players[id];
         player.moving = false;
         socket.broadcast.emit('stop', createSimplePlayer(player));
+    });
+
+    socket.on('disconnect', function() {
+        delete players[id];
+        delete socketIdToPlayerId[socketId];
+        console.log('disconnected', id);
+        socket.broadcast.emit('disconnected', id);
     });
 });
 
