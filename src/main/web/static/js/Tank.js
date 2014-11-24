@@ -1,16 +1,18 @@
-define(['Direction', 'World', 'Bullet'], function(Direction, World, Bullet) {
-    var obj = function(main, point, playerId, direction) {
+define(['require', 'Direction', 'Bullet'], function(require, Direction, Bullet) {
+    var obj = function(world, point, playerId, direction) {
         this._id = playerId;
-        this._main = main;
+        this._world = world;
         this._playerId = playerId;
 
         this._point = new createjs.Point();
         
         this.setPos(point);
-        this._main.registerTick(this);
+        this._world.registerTick(this);
 
         this._moving = false;
         this._direction = direction;
+
+        this._World = require('World');
     };
     
     obj.prototype.tick = function(event) {
@@ -42,15 +44,15 @@ define(['Direction', 'World', 'Bullet'], function(Direction, World, Bullet) {
             if(newY < this.getHeight() / 2) {
                 newY = this.getHeight() / 2;
             }
-            if(newX > this._main.getWidth() - World.BLOCK_SIZE / 2) {
-                newX = this._main.getWidth() - World.BLOCK_SIZE / 2;
+            if(newX > this._world._width - this._World.BLOCK_SIZE / 2) {
+                newX = this._world._width - this._World.BLOCK_SIZE / 2;
             }
-            if(newY > this._main.getHeight() - World.BLOCK_SIZE / 2) {
-                newY = this._main.getHeight() - World.BLOCK_SIZE / 2;
+            if(newY > this._world._height - this._World.BLOCK_SIZE / 2) {
+                newY = this._world._height - this._World.BLOCK_SIZE / 2;
             }
 
             this.setPos(new createjs.Point(newX, newY));
-            if(this._main.collidesWith(this)) {
+            if(this._world.collidesWith(this)) {
                 this.setPos(new createjs.Point(oldX, oldY));
             }
         }
@@ -82,11 +84,11 @@ define(['Direction', 'World', 'Bullet'], function(Direction, World, Bullet) {
     };
     
     obj.prototype.getWidth = function() {
-        return World.BLOCK_SIZE;
+        return this._World.BLOCK_SIZE;
     };
 
     obj.prototype.getHeight = function() {
-        return World.BLOCK_SIZE;
+        return this._World.BLOCK_SIZE;
     };
     
     obj.prototype.getPos = function() {
@@ -94,11 +96,11 @@ define(['Direction', 'World', 'Bullet'], function(Direction, World, Bullet) {
     };
     
     obj.prototype._fixHorizontally = function() {
-        this.setX(World.HALF_BLOCK_SIZE * Math.round(this.getX() / World.HALF_BLOCK_SIZE));
+        this.setX(this._World.HALF_BLOCK_SIZE * Math.round(this.getX() / this._World.HALF_BLOCK_SIZE));
     };
 
     obj.prototype._fixVertically = function() {
-        this.setY(World.HALF_BLOCK_SIZE * Math.round(this.getY() / World.HALF_BLOCK_SIZE));
+        this.setY(this._World.HALF_BLOCK_SIZE * Math.round(this.getY() / this._World.HALF_BLOCK_SIZE));
     };
 
     obj.prototype.stopMoving = function() {
@@ -126,7 +128,7 @@ define(['Direction', 'World', 'Bullet'], function(Direction, World, Bullet) {
     };
     
     obj.prototype.shoot = function() {
-        new Bullet(this._main, this);
+        new Bullet(this._world, this);
     };
     
     obj.prototype.getDirection = function() {
@@ -134,8 +136,7 @@ define(['Direction', 'World', 'Bullet'], function(Direction, World, Bullet) {
     };
     
     obj.prototype.remove = function() {
-        this._main.unregisterTick(this);
-        this._main.removeChild(this._image);
+        this._world.unregisterTick(this);
     };
     
     return obj;

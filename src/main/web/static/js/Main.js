@@ -17,12 +17,11 @@ define(
             this._stage = new createjs.Stage('canvas');
 
             this._ticks = [];
-            this._bullets = {};
-            this._tanks = {};
 
             this._spritesheet = document.getElementById('spritesheet');
 
-            this._world = new World(this);
+            this._world = new World(800, 576);
+            this.registerTick(this._world);
 
             this._border = new createjs.Shape();
             this._border.graphics.beginStroke('white');
@@ -35,6 +34,8 @@ define(
             this._fps.lineHeight = 15;
             this._fps.x = this._stage.canvas.width - 80;
             this._fps.y = 10;
+
+
 
             this._tank = null;
             this._playerId = null;
@@ -71,7 +72,7 @@ define(
 
         obj.prototype.addPlayer = function(player) {
             if(player.id != this._playerId) {
-                this.addTank(player.id, player.pos.x, player.pos.y, Direction.fromStr(player.direction));
+                this._world.addTank(player.id, player.pos.x, player.pos.y, Direction.fromStr(player.direction));
             }
         };
 
@@ -82,22 +83,9 @@ define(
             tank._moving = player.moving;
         };
 
-        obj.prototype.addTank = function (playerId, x, y, direction) {
-            console.log('adding tank', playerId);
-            var tank = new Tank(this, new createjs.Point(x, y), playerId, direction);
-            this._tanks[playerId] = tank;
-            return tank;
-        };
-
-        obj.prototype.removeTank = function (playerId) {
-            var tank = this._tanks[playerId];
-            tank.remove();
-            delete this._tanks[playerId];
-        };
-
         obj.prototype.createOwnTank = function (data) {
             this._playerId = data.id;
-            this._tank = this.addTank(data.id, data.pos.x, data.pos.y, Direction.fromStr(data.direction));
+            this._tank = this._world.addTank(data.id, data.pos.x, data.pos.y, Direction.fromStr(data.direction));
         };
 
         obj.prototype.stop = function () {
@@ -106,14 +94,6 @@ define(
 
         obj.prototype.collidesWith = function (entity) {
             return this._world.collidesWith(entity);
-        };
-
-        obj.prototype.addBullet = function (bullet, playerId) {
-            this._bullets[playerId] = bullet;
-        };
-
-        obj.prototype.removeBullet = function (playerId) {
-            delete this._bullets[playerId];
         };
 
         obj.prototype.getSpritesheet = function () {
@@ -164,8 +144,7 @@ define(
 
             switch (e.keyCode) {
                 case Key.KEYCODE_SPACE:
-                    if (!this._bullets[playerId]) {
-                        this._tank.shoot();
+                    if(this._world.shoot({id: playerId})) {
                         this._socket.shoot();
                     }
                     e.preventDefault();
@@ -180,14 +159,6 @@ define(
                 case Key.KEYCODE_DOWN:
                     var direction = Direction.fromKey(e.keyCode);
                     var result = this._tank.rotate(direction);
-
-                    if (result) {
-                        /*this._comet.send({
-                         playerId: playerId,
-                         type: 'move',
-                         direction: direction.toString()
-                         });*/
-                    }
                     e.preventDefault();
                     return false;
             }
@@ -209,8 +180,6 @@ define(
                 case Key.KEYCODE_DOWN:
                     if (this._tank.getDirection() == Direction.fromKey(e.keyCode)) {
                         this._tank.stopMoving();
-                        var playerId = this._tank.getPlayerId();
-                        //this._comet.send({playerId: playerId, type: 'stop'});
                     }
                 case Key.KEYCODE_SPACE:
                     e.preventDefault();
@@ -220,26 +189,7 @@ define(
 
         obj.prototype.shoot = function(player) {
             this.sync(player);
-            var tank = this._tanks[player.id];
-            tank.shoot();
-        };
-
-        obj.prototype.performAction = function (data) {
-            var playerId = data.playerId;
-            if (this._tank.getPlayerId() != playerId) {
-                var tank = this._tanks[playerId];
-                switch (data.type) {
-                    case 'shoot':
-                        tank.shoot();
-                        break;
-                    case 'move':
-                        tank.rotate(Direction.fromStr(data.direction));
-                        break;
-                    case 'stop':
-                        tank.stopMoving();
-                        break;
-                }
-            }
+            this._world.shoot(player);
         };
 
         return new obj();

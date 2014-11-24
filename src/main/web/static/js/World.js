@@ -1,5 +1,5 @@
-define(['Block', 'BlockType'], function (Block, BlockType) {
-    var obj = function(main) {
+define(['Block', 'BlockType', 'Tank'], function (Block, BlockType, Tank) {
+    var obj = function(width, height) {
         var level = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 2, 2, 2, 0, 3, 3, 3, 0],
@@ -15,31 +15,80 @@ define(['Block', 'BlockType'], function (Block, BlockType) {
             [0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1]
         ];
         
-        this._main = main;
-        
         this._level = [];
+        this._ticks = [];
+        this._bullets = {};
+        this._tanks = {};
+        this._width = width;
+        this._height = height;
 
         // чтоб не забыть потом опять: эта хуйня рисует по четыре блока на один физический
-        for(var x = 0; x < this._main.getWidth() / obj.HALF_BLOCK_SIZE; x++) {
+        for(var x = 0; x < this._width / obj.HALF_BLOCK_SIZE; x++) {
             this._level[x] = [];
             
-            for(var y = 0; y < this._main.getHeight() / obj.HALF_BLOCK_SIZE; y++) {
+            for(var y = 0; y < this._height / obj.HALF_BLOCK_SIZE; y++) {
                 var lX = Math.floor(x / 2);
                 var lY = Math.floor(y / 2);
                 if(lX < level.length && lY < level[lX].length && level[lY][lX]) {
                     this._level[x][y] = Block.ofType(
-                        main,
                         new createjs.Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
                         level[lY][lX]
                     );
                 } else {
                     this._level[x][y] = Block.ofType(
-                        main,
                         new createjs.Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
                         BlockType.EMPTY
                     );
                 }
             }
+        }
+    };
+
+    obj.prototype.tick = function(event) {
+        this._ticks.forEach(function (tick) {
+            tick.tick(event);
+        });
+    };
+
+    obj.prototype.addTank = function (playerId, x, y, direction) {
+        console.log('adding tank', playerId);
+        var tank = new Tank(this, new createjs.Point(x, y), playerId, direction);
+        this._tanks[playerId] = tank;
+        return tank;
+    };
+
+    obj.prototype.removeTank = function (playerId) {
+        var tank = this._tanks[playerId];
+        tank.remove();
+        delete this._tanks[playerId];
+    };
+
+    obj.prototype.addBullet = function (bullet, playerId) {
+        this._bullets[playerId] = bullet;
+    };
+
+    obj.prototype.removeBullet = function (playerId) {
+        delete this._bullets[playerId];
+    };
+
+    obj.prototype.shoot = function(player) {
+        if(!this._bullets[player.id]) {
+            var tank = this._tanks[player.id];
+            tank.shoot();
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    obj.prototype.registerTick = function(tick) {
+        this._ticks.push(tick);
+    };
+
+    obj.prototype.unregisterTick = function (tick) {
+        var index = this._ticks.indexOf(tick);
+        if (index >= 0) {
+            this._ticks.splice(index, 1);
         }
     };
     

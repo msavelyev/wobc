@@ -80,7 +80,7 @@ define(['World'], function (World) {
 
     obj.prototype.tick = function(event) {
         var that = this;
-        var mainTanks = this._main._tanks;
+        var mainTanks = this._main._world._tanks;
         var mainTanksIds = _.map(_.values(mainTanks), function(tank) {
             return tank._id;
         });

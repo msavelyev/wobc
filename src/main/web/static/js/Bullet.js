@@ -1,7 +1,7 @@
 define(['guid', 'Direction'], function (guid, Direction) {
-    var obj = function(main, tank) {
+    var obj = function(world, tank) {
         this._id = guid();
-        this._main = main;
+        this._world = world;
         this._tank = tank;
         this._direction = tank.getDirection();
         this._point = new createjs.Point();
@@ -28,8 +28,8 @@ define(['guid', 'Direction'], function (guid, Direction) {
             )
         );
         
-        this._main.registerTick(this);
-        this._main.addBullet(this, this._tank.getPlayerId());
+        this._world.registerTick(this);
+        this._world.addBullet(this, this._tank.getPlayerId());
     };
     
     obj.prototype.getWidth = function() {
@@ -88,12 +88,12 @@ define(['guid', 'Direction'], function (guid, Direction) {
         
         if(newY < 0
             || newX < 0
-            || newX > this._main.getWidth()
-            || newY > this._main.getHeight()
-            || this._main.collidesWith(this)
+            || newX > this._world._width
+            || newY > this._world._height
+            || this._world.collidesWith(this)
         ) {
-            this._main.unregisterTick(this);
-            this._main.removeBullet(this._tank.getPlayerId());
+            this._world.unregisterTick(this);
+            this._world.removeBullet(this._tank.getPlayerId());
         } else {
             this.setPos(new createjs.Point(newX, newY));
         }

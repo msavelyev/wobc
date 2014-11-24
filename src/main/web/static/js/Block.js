@@ -1,9 +1,8 @@
 define(
     ['require', 'BlockType', 'guid', 'Bullet', 'BlockHelper'],
     function (require, BlockType, guid, Bullet, BlockHelper) {
-        var obj = function (main, type, point, collideFunc) {
+        var obj = function (type, point, collideFunc) {
             this._id = guid();
-            this._main = main;
             this._type = type;
             this._point = point;
             this._collideFunc = collideFunc;
@@ -26,24 +25,23 @@ define(
             return new createjs.Point(this._point.x, this._point.y);
         };
 
-        obj.ofType = function (main, point, type) {
+        obj.ofType = function(point, type) {
             switch (type) {
                 case BlockType.EMPTY:
-                    return obj.EMPTY(main, point);
+                    return obj.EMPTY(point);
                 case BlockType.BRICK:
-                    return obj.BRICK(main, point);
+                    return obj.BRICK(point);
                 case BlockType.STONE:
-                    return obj.STONE(main, point);
+                    return obj.STONE(point);
                 case BlockType.WATER:
-                    return obj.WATER(main, point);
+                    return obj.WATER(point);
                 default:
                     return null;
             }
         };
 
-        obj.EMPTY = function (main, point) {
+        obj.EMPTY = function (point) {
             return new obj(
-                main,
                 BlockType.EMPTY,
                 point,
                 function () {
@@ -52,9 +50,8 @@ define(
             );
         };
 
-        obj.BRICK = function (main, point) {
+        obj.BRICK = function (point) {
             return new obj(
-                main,
                 BlockType.BRICK,
                 point,
                 function (entity, corners) {
@@ -92,9 +89,8 @@ define(
             );
         };
 
-        obj.STONE = function (main, point) {
+        obj.STONE = function (point) {
             return new obj(
-                main,
                 BlockType.STONE,
                 point,
                 function () {
@@ -103,9 +99,8 @@ define(
             );
         };
 
-        obj.WATER = function (main, point) {
+        obj.WATER = function (point) {
             return new obj(
-                main,
                 BlockType.WATER,
                 point,
                 function (entity) {

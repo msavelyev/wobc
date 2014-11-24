@@ -49,8 +49,8 @@ define(['Explode', 'Direction'], function(Explode, Direction) {
 
     obj.prototype.tick = function(event) {
         var that = this;
-        var mainBullets = this._main._bullets;
-        var mainBulletsIds = _.map(_.values(this._main._bullets), function(bullet) {
+        var mainBullets = this._main._world._bullets;
+        var mainBulletsIds = _.map(_.values(mainBullets), function(bullet) {
             return bullet._id;
         });
         var newBullets = _.filter(mainBulletsIds, function(id) {

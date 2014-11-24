@@ -28,9 +28,9 @@ define(function() {
         });
 
         this._socket.on('sync', function(players) {
-            console.log('syncing');
+            //console.log('syncing');
             _.each(players, function(player) {
-                that._main.sync(player);
+                //that._main.sync(player);
             });
         });
 
