@@ -1,18 +1,19 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var _ = require('underscore');
-
 var rjs = require('requirejs');
 rjs.config({
     nodeRequire: require,
     baseUrl: __dirname + '/static/js'
 });
 
+var express = rjs('express');
+var app = express();
+var server = rjs('http').Server(app);
+var io = rjs('socket.io')(server);
+var _ = rjs('underscore');
+
 var guid = rjs('guid');
 var Direction = rjs('Direction');
 var World = rjs('World');
+var log = rjs('log');
 
 server.listen(8080);
 
@@ -41,7 +42,7 @@ var world = new World(800, 576);
 
 io.on('connection', function(socket) {
     var id = guid();
-    console.log('connected', id);
+    log.info('connected', id);
 
     world.addTank(id, 32, 32, Direction.RIGHT);
 
@@ -51,27 +52,27 @@ io.on('connection', function(socket) {
     socket.emit('players', world.getPlayers());
 
     socket.on('shoot', function() {
-        console.log('shoot', id);
+        log.info('shoot', id);
         world.shoot({id: id});
         socket.broadcast.emit('shoot', world.getPlayer(id));
     });
 
     socket.on('rotate', function(direction) {
-        console.log('rotate', id, direction);
+        log.info('rotate', id, direction);
         var tank = world.getTank(id);
         tank.rotate(dir(direction));
         socket.broadcast.emit('rotate', world.getPlayer(id));
     });
 
     socket.on('stop', function() {
-        console.log('stop', id);
+        log.info('stop', id);
         var tank = world.getTank(id);
         tank.stopMoving();
         socket.broadcast.emit('stop', world.getPlayer(id));
     });
 
     socket.on('disconnect', function() {
-        console.log('disconnected', id);
+        log.info('disconnected', id);
         world.removeTank(id);
         socket.broadcast.emit('disconnected', id);
     });

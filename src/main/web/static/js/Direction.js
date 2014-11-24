@@ -1,4 +1,4 @@
-define(['Key'], function(Key) {
+define(['Key', 'log'], function(Key, log) {
     var obj = function(degree, keys, str, type) {
         this._degree = degree;
         this._keys = keys;
@@ -53,7 +53,7 @@ define(['Key'], function(Key) {
             case 'right':
                 return obj.RIGHT;
             default:
-                console.log('wrong direction', str);
+                log.error('wrong direction', str);
         }
     };
 

@@ -1,4 +1,4 @@
-define(['Block', 'BlockType', 'Tank', 'Point', 'underscore'], function (Block, BlockType, Tank, Point, _) {
+define(['Block', 'BlockType', 'Tank', 'Point', 'underscore', 'log'], function (Block, BlockType, Tank, Point, _, log) {
     var obj = function(width, height) {
         var level = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -51,7 +51,7 @@ define(['Block', 'BlockType', 'Tank', 'Point', 'underscore'], function (Block, B
     };
 
     obj.prototype.addTank = function (playerId, x, y, direction) {
-        console.log('adding tank', playerId);
+        log.debug('adding tank', playerId);
         var tank = new Tank(this, new Point(x, y), playerId, direction);
         this._tanks[playerId] = tank;
         return tank;

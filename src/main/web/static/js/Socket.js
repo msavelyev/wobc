@@ -1,23 +1,23 @@
-define(function() {
+define(['log'], function(log) {
     var obj = function(main) {
         this._main = main;
 
         var that = this;
-        console.log('connecting');
+        log.debug('connecting');
         this._socket = io.connect('http://' + config.host);
 
         this._socket.on('start', function(me) {
-            console.log('got playerId', me);
+            log.debug('got playerId', me);
             that._main.createOwnTank(me);
         });
 
         this._socket.on('connected', function(player) {
-            console.log('connected', player);
+            log.debug('connected', player);
             that._main.addPlayer(player);
         });
 
         this._socket.on('disconnected', function(playerId) {
-           console.log('disconnected', playerId);
+           log.debug('disconnected', playerId);
             that._main._world.removeTank(playerId);
         });
 
@@ -28,14 +28,14 @@ define(function() {
         });
 
         this._socket.on('sync', function(players) {
-            console.log('syncing');
+            log.debug('syncing');
             _.each(players, function(player) {
                 that._main.sync(player);
             });
         });
 
         this._socket.on('shoot', function(player) {
-            console.log('shoot', player);
+            log.debug('shoot', player);
             that._main.shoot(player);
         });
 
@@ -49,17 +49,17 @@ define(function() {
     };
 
     obj.prototype.shoot = function() {
-        console.log('sending shoot');
+        log.debug('sending shoot');
         this._socket.emit('shoot', {});
     };
 
     obj.prototype.rotate = function(direction) {
-        console.log('sending rotate', direction.toString());
+        log.debug('sending rotate', direction.toString());
         this._socket.emit('rotate', direction.toString());
     };
 
     obj.prototype.stop = function() {
-        console.log('sending stop');
+        log.debug('sending stop');
         this._socket.emit('stop');
     };
 
