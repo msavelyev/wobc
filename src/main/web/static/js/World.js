@@ -1,4 +1,4 @@
-define(['Block', 'BlockType', 'Tank', 'Point', 'underscore', 'Bullet'], function (Block, BlockType, Tank, Point, _, Bullet) {
+define(['Block', 'BlockType', 'Tank', 'Point', 'underscore'], function (Block, BlockType, Tank, Point, _) {
     var obj = function(width, height) {
         var level = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
