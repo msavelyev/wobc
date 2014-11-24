@@ -110,8 +110,9 @@ define(['World'], function (World) {
             if(tank._moving) {
                 image.updateCache();
                 if(image.paused || direction != tank._direction) {
-                    direction = tank._direction;
-                    image.gotoAndPlay(direction.toString());
+                    console.log('new direction ', tank._direction);
+                    that._tanksDirections[id] = tank._direction;
+                    image.gotoAndPlay(tank._direction.toString());
                 }
             } else {
                 image.stop();
