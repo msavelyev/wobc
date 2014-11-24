@@ -1,4 +1,4 @@
-define(['Block', 'BlockType', 'Tank'], function (Block, BlockType, Tank) {
+define(['Block', 'BlockType', 'Tank', 'Point', 'underscore', 'Bullet'], function (Block, BlockType, Tank, Point, _, Bullet) {
     var obj = function(width, height) {
         var level = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -31,12 +31,12 @@ define(['Block', 'BlockType', 'Tank'], function (Block, BlockType, Tank) {
                 var lY = Math.floor(y / 2);
                 if(lX < level.length && lY < level[lX].length && level[lY][lX]) {
                     this._level[x][y] = Block.ofType(
-                        new createjs.Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
+                        new Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
                         level[lY][lX]
                     );
                 } else {
                     this._level[x][y] = Block.ofType(
-                        new createjs.Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
+                        new Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
                         BlockType.EMPTY
                     );
                 }
@@ -52,7 +52,7 @@ define(['Block', 'BlockType', 'Tank'], function (Block, BlockType, Tank) {
 
     obj.prototype.addTank = function (playerId, x, y, direction) {
         console.log('adding tank', playerId);
-        var tank = new Tank(this, new createjs.Point(x, y), playerId, direction);
+        var tank = new Tank(this, new Point(x, y), playerId, direction);
         this._tanks[playerId] = tank;
         return tank;
     };
@@ -103,27 +103,65 @@ define(['Block', 'BlockType', 'Tank'], function (Block, BlockType, Tank) {
         var p = entity.getPos();
         var w = entity.getWidth() - 1;
         var h = entity.getHeight() - 1;
-        var topLeft = new createjs.Point(p.x - w / 2, p.y - h / 2);
-        var topRight = new createjs.Point(p.x + w / 2, p.y - h / 2);
-        var bottomLeft = new createjs.Point(p.x - w / 2, p.y + h / 2);
-        var bottomRight = new createjs.Point(p.x + w / 2, p.y + h / 2);
+        var topLeft = new Point(p.x - w / 2, p.y - h / 2);
+        var topRight = new Point(p.x + w / 2, p.y - h / 2);
+        var bottomLeft = new Point(p.x - w / 2, p.y + h / 2);
+        var bottomRight = new Point(p.x + w / 2, p.y + h / 2);
         
         var corners = [topLeft, topRight, bottomLeft, bottomRight];
-//        console.log('corners', corners);
-        
+
         var tl = pointToBlockPos(topLeft);
         var tr = pointToBlockPos(topRight);
         var bl = pointToBlockPos(bottomLeft);
         var br = pointToBlockPos(bottomRight);
-        
-        var crnrs = [tl, tr, bl, br];
-//        console.log('crnrs', crnrs);
-//        console.log('colliding ', entity);
-        
+
+        /*if(!(
+                this._level[tl.x]
+             && this._level[tr.x]
+             && this._level[bl.x]
+             && this._level[br.x]
+             && this._level[tl.x][tl.y]
+             && this._level[tr.x][tr.y]
+             && this._level[bl.x][bl.y]
+             && this._level[br.x][br.y]
+            ) || entity instanceof Bullet) {
+            console.log('entity.pos', entity.getPos());
+            var cStr = function (c) {
+                return '' + c.x + ';' + c.y;
+            };
+            console.log('corners', _.map([topLeft, topRight, bottomLeft, bottomRight], cStr));
+            console.log('crnrs', _.map([tl, tr, bl, br], cStr));
+            console.log('bullet', entity instanceof Bullet);
+        }*/
+
         return this._level[tl.x][tl.y].collidesWith(entity, corners)
              | this._level[tr.x][tr.y].collidesWith(entity, corners)
              | this._level[bl.x][bl.y].collidesWith(entity, corners)
              | this._level[br.x][br.y].collidesWith(entity, corners);
+    };
+
+    obj.prototype.getTank = function(playerId) {
+        return this._tanks[playerId];
+    };
+
+    obj.prototype.getPlayer = function(playerId) {
+        var tank = this._tanks[playerId];
+        return {
+            id: playerId,
+            moving: tank._moving,
+            pos: {
+                x: tank.getX(),
+                y: tank.getY()
+            },
+            direction: tank._direction.toString()
+        };
+    };
+
+    obj.prototype.getPlayers = function() {
+        var that = this;
+        return _.map(_.keys(this._tanks), function(playerId) {
+            return that.getPlayer(playerId);
+        });
     };
 
     obj.BLOCK_SIZE = 32;

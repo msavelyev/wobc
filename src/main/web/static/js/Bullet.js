@@ -1,10 +1,10 @@
-define(['guid', 'Direction'], function (guid, Direction) {
+define(['guid', 'Direction', 'Point'], function (guid, Direction, Point) {
     var obj = function(world, tank) {
         this._id = guid();
         this._world = world;
         this._tank = tank;
         this._direction = tank.getDirection();
-        this._point = new createjs.Point();
+        this._point = new Point();
 
         var width, height;
         switch(this._direction) {
@@ -22,7 +22,7 @@ define(['guid', 'Direction'], function (guid, Direction) {
         this._height = height;
         
         this.setPos(
-            new createjs.Point(
+            new Point(
                 tank.getPos().x,
                 tank.getPos().y
             )
@@ -63,14 +63,19 @@ define(['guid', 'Direction'], function (guid, Direction) {
     };
 
     obj.prototype.getPos = function() {
-        return new createjs.Point(this.getX(), this.getY());
+        return new Point(this.getX(), this.getY());
     };
     
     obj.prototype.tick = function(event) {
         var diff = event.delta / 1000 * 400;
 
-        var newY = this.getY();
-        var newX = this.getX();
+        var x = this.getX();
+        var y = this.getY();
+        var newY = y;
+        var newX = x;
+        var w = this._width;
+        var h = this._height;
+
         switch(this._direction) {
             case Direction.DOWN:
                 newY += diff;
@@ -86,16 +91,16 @@ define(['guid', 'Direction'], function (guid, Direction) {
                 break;
         }
         
-        if(newY < 0
-            || newX < 0
-            || newX > this._world._width
-            || newY > this._world._height
+        if(y - h / 2 < 0
+            || x - w / 2 < 0
+            || x + w / 2 > this._world._width
+            || y + h / 2 > this._world._height
             || this._world.collidesWith(this)
         ) {
             this._world.unregisterTick(this);
             this._world.removeBullet(this._tank.getPlayerId());
         } else {
-            this.setPos(new createjs.Point(newX, newY));
+            this.setPos(new Point(newX, newY));
         }
     };
     

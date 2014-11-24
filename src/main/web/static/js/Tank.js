@@ -1,10 +1,10 @@
-define(['require', 'Direction', 'Bullet'], function(require, Direction, Bullet) {
+define(['require', 'Direction', 'Bullet', 'Point'], function(require, Direction, Bullet, Point) {
     var obj = function(world, point, playerId, direction) {
         this._id = playerId;
         this._world = world;
         this._playerId = playerId;
 
-        this._point = new createjs.Point();
+        this._point = new Point();
         
         this.setPos(point);
         this._world.registerTick(this);
@@ -51,9 +51,9 @@ define(['require', 'Direction', 'Bullet'], function(require, Direction, Bullet) 
                 newY = this._world._height - this._World.BLOCK_SIZE / 2;
             }
 
-            this.setPos(new createjs.Point(newX, newY));
+            this.setPos(new Point(newX, newY));
             if(this._world.collidesWith(this)) {
-                this.setPos(new createjs.Point(oldX, oldY));
+                this.setPos(new Point(oldX, oldY));
             }
         }
     };
@@ -92,7 +92,7 @@ define(['require', 'Direction', 'Bullet'], function(require, Direction, Bullet) 
     };
     
     obj.prototype.getPos = function() {
-        return new createjs.Point(this.getX(), this.getY());
+        return new Point(this.getX(), this.getY());
     };
     
     obj.prototype._fixHorizontally = function() {

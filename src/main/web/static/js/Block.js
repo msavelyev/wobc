@@ -1,6 +1,6 @@
 define(
-    ['require', 'BlockType', 'guid', 'Bullet', 'BlockHelper'],
-    function (require, BlockType, guid, Bullet, BlockHelper) {
+    ['require', 'BlockType', 'guid', 'Bullet', 'BlockHelper', 'Point'],
+    function (require, BlockType, guid, Bullet, BlockHelper, Point) {
         var obj = function (type, point, collideFunc) {
             this._id = guid();
             this._type = type;
@@ -22,7 +22,7 @@ define(
         };
 
         obj.prototype.getPos = function () {
-            return new createjs.Point(this._point.x, this._point.y);
+            return new Point(this._point.x, this._point.y);
         };
 
         obj.ofType = function(point, type) {
@@ -66,8 +66,8 @@ define(
                     var bounds = BlockHelper.brick.subtypeBounds[this._subtype];
                     var pos = this.getPos();
 
-                    var tl = new createjs.Point(pos.x + bounds.x, pos.y + bounds.y);
-                    var br = new createjs.Point(pos.x + bounds.x + bounds.width, pos.y + bounds.y + bounds.height);
+                    var tl = new Point(pos.x + bounds.x, pos.y + bounds.y);
+                    var br = new Point(pos.x + bounds.x + bounds.width, pos.y + bounds.y + bounds.height);
                     for (var i = 0; i < corners.length; i++) {
                         var c = corners[i];
                         if (c.x >= tl.x && c.x <= br.x && c.y >= tl.y && c.y <= br.y) {

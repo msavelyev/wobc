@@ -18,7 +18,7 @@ define(function() {
 
         this._socket.on('disconnected', function(playerId) {
            console.log('disconnected', playerId);
-            that._main.removeTank(playerId);
+            that._main._world.removeTank(playerId);
         });
 
         this._socket.on('players', function(players) {
@@ -28,15 +28,23 @@ define(function() {
         });
 
         this._socket.on('sync', function(players) {
-            //console.log('syncing');
+            console.log('syncing');
             _.each(players, function(player) {
-                //that._main.sync(player);
+                that._main.sync(player);
             });
         });
 
         this._socket.on('shoot', function(player) {
             console.log('shoot', player);
             that._main.shoot(player);
+        });
+
+        this._socket.on('rotate', function(player) {
+            that._main.sync(player);
+        });
+
+        this._socket.on('stop', function(player) {
+            that._main.sync(player);
         });
     };
 
@@ -46,10 +54,12 @@ define(function() {
     };
 
     obj.prototype.rotate = function(direction) {
+        console.log('sending rotate', direction.toString());
         this._socket.emit('rotate', direction.toString());
     };
 
     obj.prototype.stop = function() {
+        console.log('sending stop');
         this._socket.emit('stop');
     };
 

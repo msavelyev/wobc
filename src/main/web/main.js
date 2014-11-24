@@ -12,6 +12,7 @@ rjs.config({
 
 var guid = rjs('guid');
 var Direction = rjs('Direction');
+var World = rjs('World');
 
 server.listen(8080);
 
@@ -19,7 +20,6 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-var socketIdToPlayerId = {};
 var players = {};
 
 app.use('/static', express.static(__dirname + '/static'));
@@ -33,62 +33,60 @@ var createSimplePlayer = function(player) {
     };
 };
 
-var simplePlayers = function() {
-    return _.map(_.values(players), createSimplePlayer);
+var dir = function(direction) {
+    return Direction.fromStr(direction);
 };
+
+var world = new World(800, 576);
 
 io.on('connection', function(socket) {
     var id = guid();
-    var socketId = socket.client.id;
-    socketIdToPlayerId[socketId] = id;
     console.log('connected', id);
 
-    players[id] = {
-        id: id,
-        socket: socket,
-        moving: false,
-        pos: {
-            x: 32,
-            y: 32
-        },
-        direction: Direction.RIGHT
-    };
-    var simplePlayer = createSimplePlayer(players[id]);
+    world.addTank(id, 32, 32, Direction.RIGHT);
+
+    var simplePlayer = world.getPlayer(id);
     socket.broadcast.emit('connected', simplePlayer);
     socket.emit('start', simplePlayer);
-    socket.emit('players', simplePlayers());
+    socket.emit('players', world.getPlayers());
 
     socket.on('shoot', function() {
-        console.log('someone is shooting');
-        var id = socketIdToPlayerId[socketId];
-        var player = createSimplePlayer(players[id]);
-
-        socket.broadcast.emit('shoot', player);
+        console.log('shoot', id);
+        world.shoot({id: id});
+        socket.broadcast.emit('shoot', world.getPlayer(id));
     });
 
     socket.on('rotate', function(direction) {
-        var id = socketIdToPlayerId[socketId];
-        var player = players[id];
-        player.direction = direction;
-        player.moving = true;
-        socket.broadcast.emit('rotate', createSimplePlayer(player));
+        console.log('rotate', id, direction);
+        var tank = world.getTank(id);
+        tank.rotate(dir(direction));
+        socket.broadcast.emit('rotate', world.getPlayer(id));
     });
 
     socket.on('stop', function() {
-        var id = socketIdToPlayerId[socketId];
-        var player = players[id];
-        player.moving = false;
-        socket.broadcast.emit('stop', createSimplePlayer(player));
+        console.log('stop', id);
+        var tank = world.getTank(id);
+        tank.stopMoving();
+        socket.broadcast.emit('stop', world.getPlayer(id));
     });
 
     socket.on('disconnect', function() {
-        delete players[id];
-        delete socketIdToPlayerId[socketId];
         console.log('disconnected', id);
+        world.removeTank(id);
         socket.broadcast.emit('disconnected', id);
     });
 });
 
 setInterval(function () {
-    io.emit('sync', simplePlayers());
+    io.emit('sync', world.getPlayers());
 }, 1000);
+
+var prevTime = new Date();
+setInterval(function() {
+    var newTime = new Date();
+    var delta = newTime.getTime() - prevTime.getTime();
+    world.tick({
+        delta: delta
+    });
+    prevTime = newTime;
+}, 1);

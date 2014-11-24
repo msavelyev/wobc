@@ -110,7 +110,6 @@ define(['World'], function (World) {
             if(tank._moving) {
                 image.updateCache();
                 if(image.paused || direction != tank._direction) {
-                    console.log('new direction ', tank._direction);
                     that._tanksDirections[id] = tank._direction;
                     image.gotoAndPlay(tank._direction.toString());
                 }

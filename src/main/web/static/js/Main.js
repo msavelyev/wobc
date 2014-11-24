@@ -77,7 +77,7 @@ define(
         };
 
         obj.prototype.sync = function(player) {
-            var tank = this._tanks[player.id];
+            var tank = this._world._tanks[player.id];
             tank.setPos(player.pos);
             tank._direction = Direction.fromStr(player.direction);
             tank._moving = player.moving;
@@ -140,8 +140,6 @@ define(
 
             var playerId = this._tank.getPlayerId();
 
-            console.log('keyDown', e.keyCode);
-
             switch (e.keyCode) {
                 case Key.KEYCODE_SPACE:
                     if(this._world.shoot({id: playerId})) {
@@ -158,7 +156,9 @@ define(
                 case Key.KEYCODE_S:
                 case Key.KEYCODE_DOWN:
                     var direction = Direction.fromKey(e.keyCode);
-                    var result = this._tank.rotate(direction);
+                    if(this._tank.rotate(direction)) {
+                        this._socket.rotate(direction);
+                    }
                     e.preventDefault();
                     return false;
             }
@@ -166,8 +166,6 @@ define(
 
         obj.prototype._handleKeyUp = function (e) {
             e = e || event;
-
-            console.log('keyUp', e.keyCode);
 
             switch (e.keyCode) {
                 case Key.KEYCODE_A:
@@ -180,6 +178,7 @@ define(
                 case Key.KEYCODE_DOWN:
                     if (this._tank.getDirection() == Direction.fromKey(e.keyCode)) {
                         this._tank.stopMoving();
+                        this._socket.stop();
                     }
                 case Key.KEYCODE_SPACE:
                     e.preventDefault();
