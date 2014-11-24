@@ -77,8 +77,6 @@ define(
                     }
 
                     if (collides && entity instanceof Bullet) {
-                        console.log(this._subtype, entity.getDirection().toString());
-
                         this._subtype = BlockHelper.brick.transitions[this._subtype][entity.getDirection().toString()];
                         return true;
                     } else {
