@@ -15,8 +15,6 @@ define(['require'], function(require) {
             exitOnError: false
         });
     } catch(e) {
-        console.error(e);
-    } finally {
         var logFunc = function(type) {
             return console[type].bind(console);
         };

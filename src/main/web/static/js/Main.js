@@ -58,11 +58,11 @@ define(
             );
             createjs.Ticker.setFPS(60);
 
-            document.onkeydown = function () {
-                that._handleKeyDown();
+            document.onkeydown = function (e) {
+                that._handleKeyDown(e);
             };
-            document.onkeyup = function () {
-                that._handleKeyUp();
+            document.onkeyup = function (e) {
+                that._handleKeyUp(e);
             };
         };
 
@@ -136,7 +136,7 @@ define(
         };
 
         obj.prototype._handleKeyDown = function (e) {
-            e = e || event;
+            //e = e || event;
 
             var playerId = this._tank.getPlayerId();
 
@@ -165,7 +165,7 @@ define(
         };
 
         obj.prototype._handleKeyUp = function (e) {
-            e = e || event;
+            //e = e || event;
 
             switch (e.keyCode) {
                 case Key.KEYCODE_A:
