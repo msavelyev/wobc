@@ -91,3 +91,5 @@ setInterval(function() {
     });
     prevTime = newTime;
 }, 1);
+
+console.log('started server on 0.0.0.0:8080');
