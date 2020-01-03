@@ -8,7 +8,6 @@ var express = rjs('express');
 var app = express();
 var server = rjs('http').Server(app);
 var io = rjs('socket.io')(server);
-var _ = rjs('underscore');
 
 var guid = rjs('guid');
 var Direction = rjs('Direction');
@@ -21,18 +20,7 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-var players = {};
-
 app.use('/static', express.static(__dirname + '/static'));
-
-var createSimplePlayer = function(player) {
-    return {
-        id: player.id,
-        moving: player.moving,
-        pos: player.pos,
-        direction: player.direction.toString()
-    };
-};
 
 var dir = function(direction) {
     return Direction.fromStr(direction);
