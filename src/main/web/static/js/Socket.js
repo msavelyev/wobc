@@ -3,8 +3,9 @@ define(['log'], function(log) {
         this._main = main;
 
         var that = this;
-        log.debug('connecting');
-        this._socket = io.connect('http://' + config.host);
+        var host = window.location.origin;
+        log.debug('connecting to ', host);
+        this._socket = io.connect(host);
 
         this._socket.on('start', function(me) {
             log.debug('got playerId', me);

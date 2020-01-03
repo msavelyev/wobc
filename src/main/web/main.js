@@ -19,7 +19,6 @@ server.listen(process.env.PORT || 8080);
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
-
 app.use('/static', express.static(__dirname + '/static'));
 
 var dir = function(direction) {
