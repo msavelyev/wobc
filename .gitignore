@@ -6,3 +6,5 @@
 gradle.properties
 node_modules
 ENV
+
+*.xcf
