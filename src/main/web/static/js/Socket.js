@@ -6,6 +6,7 @@ define(['log'], function(log) {
         var host = window.location.origin;
         log.debug('connecting to ', host);
         this._socket = io.connect(host);
+        this._pingTime = null;
 
         this._socket.on('start', function(me) {
             log.debug('got playerId', me);
@@ -47,6 +48,18 @@ define(['log'], function(log) {
         this._socket.on('stop', function(player) {
             that._main.sync(player);
         });
+
+        this.ping();
+
+        this._socket.on('pong', function() {
+            var latency = new Date() - that._pingTime;
+            that._pingTime = null;
+
+            that._main.ping(latency);
+            setTimeout(function() {
+                that.ping();
+            }, 100);
+        });
     };
 
     obj.prototype.shoot = function() {
@@ -62,6 +75,11 @@ define(['log'], function(log) {
     obj.prototype.stop = function() {
         log.debug('sending stop');
         this._socket.emit('stop');
+    };
+
+    obj.prototype.ping = function() {
+        this._socket.emit('ping');
+        this._pingTime = new Date();
     };
 
     return obj;

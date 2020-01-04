@@ -63,6 +63,11 @@ io.on('connection', function(socket) {
         world.removeTank(id);
         socket.broadcast.emit('disconnected', id);
     });
+
+    socket.on('ping', function() {
+        log.info('ping', id);
+        socket.emit('pong');
+    });
 });
 
 setInterval(function () {

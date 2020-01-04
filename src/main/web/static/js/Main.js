@@ -13,6 +13,11 @@ define(
             this._stage.update();
         };
 
+        obj.prototype.ping = function(latency) {
+            this._ping.text = 'ping ' + latency + 'ms';
+            this._stage.update();
+        };
+
         obj.prototype.init = function () {
             this._stage = new createjs.Stage('canvas');
 
@@ -35,7 +40,10 @@ define(
             this._fps.x = this._stage.canvas.width - 80;
             this._fps.y = 10;
 
-
+            this._ping = this._stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
+            this._ping.lineHeight = 15;
+            this._ping.x = this._stage.canvas.width - 80;
+            this._ping.y = 25;
 
             this._tank = null;
             this._playerId = null;
