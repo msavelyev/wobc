@@ -75,6 +75,7 @@ setInterval(function () {
 }, 1000);
 
 var prevTime = new Date();
+var tick = 1;
 setInterval(function() {
     var newTime = new Date();
     var delta = newTime.getTime() - prevTime.getTime();
@@ -82,6 +83,15 @@ setInterval(function() {
         delta: delta
     });
     prevTime = newTime;
+    tick += 1;
 }, 1);
+
+var previousTick = tick;
+setInterval(function() {
+    var fps = (tick - previousTick);
+    log.info('fps', fps);
+
+    previousTick = tick;
+}, 1000);
 
 console.log('started server on 0.0.0.0:8080');
