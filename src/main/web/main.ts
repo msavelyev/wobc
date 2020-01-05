@@ -1,18 +1,18 @@
-var rjs = require('requirejs');
+const rjs = require('requirejs');
 rjs.config({
     nodeRequire: require,
     baseUrl: __dirname + '/static/js'
 });
 
-var express = rjs('express');
-var app = express();
-var server = rjs('http').Server(app);
-var io = rjs('socket.io')(server);
+const express = rjs('express');
+const app = express();
+const server = rjs('http').Server(app);
+const io = rjs('socket.io')(server);
 
-var guid = rjs('guid');
-var Direction = rjs('Direction');
-var World = rjs('World');
-var log = rjs('log');
+const guid = rjs('guid');
+const Direction = rjs('Direction');
+const World = rjs('World');
+const log = rjs('log');
 
 server.listen(process.env.PORT || 8080);
 
