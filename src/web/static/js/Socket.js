@@ -1,4 +1,4 @@
-define(['log'], function(log) {
+define(['src/lib/log'], function(log) {
     var obj = function(main) {
         this._main = main;
 

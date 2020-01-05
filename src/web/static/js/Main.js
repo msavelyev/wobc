@@ -1,7 +1,7 @@
 define(
     [
-        'World', 'DebugGrid', 'renderer/TankRenderer', 'renderer/BulletRenderer', 'renderer/BlockRenderer', 'Socket',
-        'Tank', 'Key', 'Direction'
+        'src/lib/game/World', 'src/lib/game/DebugGrid', 'renderer/TankRenderer', 'renderer/BulletRenderer', 'renderer/BlockRenderer', 'Socket',
+        'src/lib/game/Tank', 'src/lib/game/Key', 'src/lib/game/Direction'
     ],
     function (World, DebugGrid, TankRenderer, BulletRenderer, BlockRenderer, Socket, Tank, Key, Direction) {
         var obj = function () {

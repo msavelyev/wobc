@@ -1,19 +1,22 @@
 {
   "dependencies": {
     "koa": "^2.11.0",
+    "koa-router": "^7.0.42",
+    "koa-send": "^5.0.0",
+    "koa-static": "^5.0.0",
     "lodash": "^4.14",
-    "requirejs": "^2.3.6",
-    "socket.io": "^2.1.4",
-    "winston": "^2.4.4"
+    "socket.io": "^2.1.4"
   },
   "scripts": {
-    "start": "node src/main/web/main.ts"
+    "start": "node src/main.ts"
   },
   "devDependencies": {
+    "@types/koa": "^2.11.0",
+    "@types/koa-router": "^7.0.42",
     "@types/lodash": "^4.14",
     "@types/node": "^13.1.4",
     "@types/socket.io": "^2.1.4",
-    "@types/winston": "^2.4.4",
+    "ts-node": "^8.5.4",
     "typescript": "^3.7.4"
   }
 }

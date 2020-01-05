@@ -1,4 +1,4 @@
-define(['Key', 'log'], function(Key, log) {
+define(['src/lib/game/Key', 'src/lib/log'], function(Key, log) {
     var obj = function(degree, keys, str, type) {
         this._degree = degree;
         this._keys = keys;

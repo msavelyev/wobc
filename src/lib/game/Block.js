@@ -1,5 +1,5 @@
 define(
-    ['require', 'BlockType', 'guid', 'Bullet', 'BlockHelper', 'Point'],
+    ['require', 'src/lib/game/BlockType', 'src/lib/guid', 'src/lib/game/Bullet', 'src/lib/game/BlockHelper', 'src/lib/game/Point'],
     function (require, BlockType, guid, Bullet, BlockHelper, Point) {
         var obj = function (type, point, collideFunc) {
             this._id = guid();
@@ -57,7 +57,7 @@ define(
                 function (entity, corners) {
                     if (this._subtype == 'none') {
                         return false;
-                    } else if (entity instanceof require('Tank')) {
+                    } else if (entity instanceof require('src/lib/game/Tank')) {
                         return true;
                     }
 
@@ -102,7 +102,7 @@ define(
                 BlockType.WATER,
                 point,
                 function (entity) {
-                    return entity instanceof require('Tank');
+                    return entity instanceof require('src/lib/game/Tank');
                 }
             );
         };

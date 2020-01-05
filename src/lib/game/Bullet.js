@@ -1,4 +1,4 @@
-define(['guid', 'Direction', 'Point'], function (guid, Direction, Point) {
+define(['src/lib/guid', 'src/lib/game/Direction', 'src/lib/game/Point'], function (guid, Direction, Point) {
     var obj = function(world, tank) {
         this._id = guid();
         this._world = world;

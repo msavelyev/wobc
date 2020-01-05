@@ -1,4 +1,4 @@
-define(['World'], function (World) {
+define(['src/lib/game/World'], function (World) {
     return function(main) {
         this._grid = new createjs.Shape();
         var graph = this._grid.graphics;

@@ -1,4 +1,4 @@
-define(['require', 'Direction', 'Bullet', 'Point'], function(require, Direction, Bullet, Point) {
+define(['require', 'src/lib/game/Direction', 'src/lib/game/Bullet', 'src/lib/game/Point'], function(require, Direction, Bullet, Point) {
     var obj = function(world, point, playerId, direction) {
         this._id = playerId;
         this._world = world;
@@ -12,7 +12,7 @@ define(['require', 'Direction', 'Bullet', 'Point'], function(require, Direction,
         this._moving = false;
         this._direction = direction;
 
-        this._World = require('World');
+        this._World = require('src/lib/game/World');
     };
     
     obj.prototype.tick = function(event) {
