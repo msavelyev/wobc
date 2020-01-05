@@ -47,6 +47,10 @@ define(['BlockType', 'BlockHelper'], function(BlockType, BlockHelper) {
     var removeBlockImage = function(that, block) {
         var id = block._id;
         var image = that._images[id];
+        if (image === undefined) {
+            return;
+        }
+
         image.stop();
         that._main.removeChild(image);
         delete that._images[id];
@@ -68,6 +72,10 @@ define(['BlockType', 'BlockHelper'], function(BlockType, BlockHelper) {
 
     obj.prototype.tick = function(event) {
         var world = this._main._world;
+        if (!world._initialized) {
+            return;
+        }
+
         var that = this;
         _.each(world._level, function (x) {
             _.each(x, function (block) {

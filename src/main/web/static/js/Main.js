@@ -25,7 +25,7 @@ define(
 
             this._spritesheet = document.getElementById('spritesheet');
 
-            this._world = new World(800, 576);
+            this._world = new World(800, 576, []);
             this.registerTick(this._world);
 
             this._border = new createjs.Shape();

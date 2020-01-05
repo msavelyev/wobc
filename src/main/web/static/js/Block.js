@@ -36,7 +36,7 @@ define(
                 case BlockType.WATER:
                     return obj.WATER(point);
                 default:
-                    return null;
+                    throw new Error('Unknown blockType ' + type);
             }
         };
 

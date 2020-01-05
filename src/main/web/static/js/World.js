@@ -1,47 +1,38 @@
 define(['Block', 'BlockType', 'Tank', 'Point', 'underscore', 'log'], function (Block, BlockType, Tank, Point, _, log) {
-    var obj = function(width, height) {
-        var level = [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 2, 2, 2, 0, 3, 3, 3, 0],
-            [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-            [0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
-            [0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
-            [0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1],
-            [0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
-            [0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
-            [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1]
-        ];
-        
+    var obj = function(width, height, level) {
         this._level = [];
         this._ticks = [];
         this._bullets = {};
         this._tanks = {};
         this._width = width;
         this._height = height;
+        this._initialized = false;
 
-        // чтоб не забыть потом опять: эта хуйня рисует по четыре блока на один физический
-        for(var x = 0; x < this._width / obj.HALF_BLOCK_SIZE; x++) {
-            this._level[x] = [];
-            
-            for(var y = 0; y < this._height / obj.HALF_BLOCK_SIZE; y++) {
+        if (level === null) {
+            return;
+        }
+
+        for(var y = 0; y < this._height / obj.HALF_BLOCK_SIZE; y++) {
+            this._level[y] = [];
+
+            for(var x = 0; x < this._width / obj.HALF_BLOCK_SIZE; x++) {
                 var lX = Math.floor(x / 2);
                 var lY = Math.floor(y / 2);
                 if(lX < level.length && lY < level[lX].length && level[lY][lX]) {
-                    this._level[x][y] = Block.ofType(
-                        new Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
-                        level[lY][lX]
+                    this._level[y][x] = Block.ofType(
+                      new Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
+                      level[lY][lX]
                     );
                 } else {
-                    this._level[x][y] = Block.ofType(
-                        new Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
-                        BlockType.EMPTY
+                    this._level[y][x] = Block.ofType(
+                      new Point(x * obj.HALF_BLOCK_SIZE, y * obj.HALF_BLOCK_SIZE),
+                      BlockType.EMPTY
                     );
                 }
             }
         }
+
+        this._initialized = true;
     };
 
     obj.prototype.tick = function(event) {
@@ -134,10 +125,10 @@ define(['Block', 'BlockType', 'Tank', 'Point', 'underscore', 'log'], function (B
             console.log('bullet', entity instanceof Bullet);
         }*/
 
-        return this._level[tl.x][tl.y].collidesWith(entity, corners)
-             | this._level[tr.x][tr.y].collidesWith(entity, corners)
-             | this._level[bl.x][bl.y].collidesWith(entity, corners)
-             | this._level[br.x][br.y].collidesWith(entity, corners);
+        return this._level[tl.y][tl.x].collidesWith(entity, corners)
+             | this._level[tr.y][tr.x].collidesWith(entity, corners)
+             | this._level[bl.y][bl.x].collidesWith(entity, corners)
+             | this._level[br.y][br.x].collidesWith(entity, corners);
     };
 
     obj.prototype.getTank = function(playerId) {
@@ -167,6 +158,46 @@ define(['Block', 'BlockType', 'Tank', 'Point', 'underscore', 'log'], function (B
     obj.BLOCK_SIZE = 32;
     obj.HALF_BLOCK_SIZE = obj.BLOCK_SIZE / 2;
     obj.Q_BLOCK_SIZE = obj.HALF_BLOCK_SIZE / 2;
+
+    obj.prototype.serializeLevel = function() {
+        var result = [];
+
+        for (var y = 0; y < this._level.length; y++) {
+            result[y] = [];
+
+            for (var x = 0; x < this._level[y].length; x++) {
+                var block = this._level[y][x];
+                result[y][x] = {
+                    type: block._type,
+                    subtype: block._subtype
+                };
+            }
+        }
+
+        return result;
+    };
+
+    obj.prototype.deserializeLevel = function(level) {
+        var newLevel = [];
+
+        for(var y = 0; y < level.length; y++) {
+            newLevel[y] = [];
+
+            for(var x = 0; x < level[y].length; x++) {
+                newLevel[y][x] = Block.ofType(
+                  new Point(x, y),
+                  level[y][x].type
+                );
+                newLevel[y][x]._subtype = level[y][x].subtype;
+            }
+        }
+
+        this._level = newLevel;
+
+        if (!this._initialized) {
+            this._initialized = true;
+        }
+    };
     
     return obj;
 });

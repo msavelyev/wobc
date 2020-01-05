@@ -29,11 +29,18 @@ define(['log'], function(log) {
             });
         });
 
-        this._socket.on('sync', function(players) {
+        this._socket.on('level', function(level) {
+            log.info('got level', level);
+            that._main._world.deserializeLevel(level);
+        });
+
+        this._socket.on('sync', function(data) {
             log.debug('syncing');
-            _.each(players, function(player) {
+            _.each(data.players, function(player) {
                 that._main.sync(player);
             });
+
+            that._main._world.deserializeLevel(data.level);
         });
 
         this._socket.on('shoot', function(player) {

@@ -25,7 +25,24 @@ var dir = function(direction) {
     return Direction.fromStr(direction);
 };
 
-var world = new World(800, 576);
+var world = new World(
+  800,
+  576,
+  [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 2, 2, 2, 0, 3, 3, 3, 0],
+      [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+      [0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+      [0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+      [0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1],
+      [0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+      [0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
+      [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1]
+  ]
+);
 
 io.on('connection', function(socket) {
     var id = guid();
@@ -37,6 +54,7 @@ io.on('connection', function(socket) {
     socket.broadcast.emit('connected', simplePlayer);
     socket.emit('start', simplePlayer);
     socket.emit('players', world.getPlayers());
+    socket.emit('level', world.serializeLevel());
 
     socket.on('shoot', function() {
         log.info('shoot', id);
@@ -71,7 +89,10 @@ io.on('connection', function(socket) {
 });
 
 setInterval(function () {
-    io.emit('sync', world.getPlayers());
+    io.emit('sync', {
+      players: world.getPlayers(),
+      level: world.serializeLevel()
+    });
 }, 1000);
 
 var prevTime = new Date();

@@ -16,6 +16,8 @@ define(function() {
                 case BlockType.WATER:
                     return 'water';
             }
+
+            throw new Error('Unknown blockType ' + blockType);
         }
     };
     return BlockType
