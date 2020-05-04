@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outDir": "../../dist/server",
+    "sourceMap": true,
+    "target": "ESNext",
+    "lib": [
+      "DOM",
+      "ES2020",
+      "ScriptHost",
+      "ES6"
+    ]
+  },
+  "include": [
+    "**/*.ts"
+  ]
+}

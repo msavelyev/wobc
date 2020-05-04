@@ -1,0 +1,37 @@
+{
+  "dependencies": {
+    "createjs": "^1.0.1",
+    "lodash": "^4.14",
+    "socket.io": "^2.1.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@types/createjs": "0.0.29",
+    "@types/lodash": "^4.14",
+    "@types/socket.io": "^2.1.4",
+    "babelify": "^10.0.0",
+    "browserify": "^16.5.1",
+    "tsify": "^4.0.1",
+    "typescript": "^3.7.4"
+  },
+  "browserify": {
+    "plugin": [
+      [
+        "tsify",
+        {
+          "target": "es6"
+        }
+      ]
+    ],
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "amd",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outFile": "../../dist/lib/lib.js",
+    "sourceMap": true,
+    "target": "ESNext",
+    "lib": [
+      "DOM",
+      "ES2020",
+      "ScriptHost",
+      "ES6"
+    ]
+  },
+  "include": [
+    "**/*.ts"
+  ]
+}
